@@ -1,20 +1,27 @@
 # frozen_string_literal: true
 
 require_relative "spec_helper"
+require "zip"
 
-describe "Changes requested" do # rubocop:disable Metrics/BlockLength
+describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   before do
+    recreate_example_dir
+    @old_glob = Dir.glob(EXAMPLE_ALL)
     @reen_mock_editor = Reenrb::Reen.new(options: { mock_editor: true })
   end
 
-  it "should know to make no changes" do
-    changed = @reen_mock_editor.call(EXAMPLES_ALL) { nil }
-
-    _(changed.all? { |ch| ch.change == :none }).must_equal true
+  after do
+    remove_example_dirs
   end
 
-  it "should recognize a renaming details correctly" do
-    changed = @reen_mock_editor.call(EXAMPLES_ALL) do |tmpfile_path|
+  it "should know to make no changes" do
+    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) { nil }
+    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
+    _(@old_glob == Dir.glob(EXAMPLE_ALL)).must_equal true
+  end
+
+  it "should execute renaming correctly" do
+    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename LICSENSE.txt -> LICENSE.md
@@ -23,15 +30,17 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    _(changed.all? { |ch| ch.change == :none }).must_equal false
+    new_glob = Dir.glob(EXAMPLE_ALL)
 
-    renamed = changed.select { |ch| ch.change == :rename }.first
-    _(renamed.original.include?("LICENSE.txt")).must_equal true
-    _(renamed.revised.include?("LICENSE.md")).must_equal true
+    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
+    _(@old_glob == new_glob).must_equal false
+
+    index = @old_glob.index { |l| l.include? "LICENSE.txt" }
+    _(new_glob[index]).must_include "LICENSE.md"
   end
 
-  it "should recognize a deletion" do
-    changed = @reen_mock_editor.call(EXAMPLES_ALL) do |tmpfile_path|
+  it "should execute deletion correctly" do
+    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Delete bin/myexec
@@ -40,14 +49,19 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    _(changed.all? { |ch| ch.change == :none }).must_equal false
+    new_glob = Dir.glob(EXAMPLE_ALL)
 
-    renamed = changed.select { |ch| ch.change == :delete }.first
-    _(renamed.original.include?("bin/myexec")).must_equal true
+    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
+    _(@old_glob == new_glob).must_equal false
+
+    _(new_glob.size).must_equal @old_glob.size - 1
+    _(new_glob.select { |l| l.include?("bin/myexec") }).must_equal []
   end
 
-  it "should recognize a renaming details correctly" do
-    changed = @reen_mock_editor.call(EXAMPLES_ALL) do |tmpfile_path|
+  it "should execute multiple requests correctly" do
+    _(@old_glob.select { |l| l.include?(".yaml") }.size).must_equal 0
+
+    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename 3 code files
@@ -55,7 +69,12 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    renamed = changed.select { |ch| ch.change == :rename }
-    _(renamed.size).must_equal 3
+    new_glob = Dir.glob(EXAMPLE_ALL)
+
+    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
+    _(@old_glob == new_glob).must_equal false
+
+    _(new_glob.select { |l| l.include?(".json") }.size).must_equal 0
+    _(new_glob.select { |l| l.include?(".yaml") }.size).must_equal 3
   end
 end

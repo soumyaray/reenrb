@@ -8,11 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors = ["Soumya Ray"]
   spec.email = ["soumya.ray@gmail.com"]
 
-  spec.summary = "Renames a pattern of files using your favorite editor"
-  spec.description = "Renames a pattern of files using your favorite editor"
+  spec.summary = "Renames or deletes a pattern of files using your favorite editor"
+  spec.description = "Renames or deletes a pattern of files using your favorite editor"
   # spec.homepage = "TODO: Put your gem's website or public repo URL here."
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 2.7"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
