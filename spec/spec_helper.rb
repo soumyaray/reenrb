@@ -5,3 +5,5 @@ require "reenrb"
 
 require "minitest/autorun"
 require "minitest/rg"
+
+EXAMPLES_ALL = "spec/fixtures/example/**/*"
