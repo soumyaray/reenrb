@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tempfile"
+
 module Reenrb
   # Manages a temporary file with requested changes
   class ChangesFile

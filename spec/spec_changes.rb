@@ -15,13 +15,13 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should know to make no changes" do
-    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) { nil }
+    tasks = @reen_mock_editor.execute(@old_glob) { nil }
     _(tasks.all? { |ch| ch.status == :executed }).must_equal true
     _(@old_glob == Dir.glob(EXAMPLE_ALL)).must_equal true
   end
 
   it "should execute renaming correctly" do
-    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
+    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename LICSENSE.txt -> LICENSE.md
@@ -40,7 +40,7 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should execute deletion correctly" do
-    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
+    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Delete bin/myexec
@@ -61,7 +61,7 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   it "should execute multiple requests correctly" do
     _(@old_glob.select { |l| l.include?(".yaml") }.size).must_equal 0
 
-    tasks = @reen_mock_editor.execute(EXAMPLE_ALL) do |tmpfile_path|
+    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename 3 code files

@@ -6,3 +6,6 @@
 /pkg/
 /spec/reports/
 /tmp/
+
+spec/fixtures/example/*
+spec/fixtures/example_old/*

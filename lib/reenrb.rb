@@ -20,8 +20,8 @@ module Reenrb
       @options = options
     end
 
-    def request(pattern = "*", &block)
-      original_list = Dir.glob(pattern)
+    def request(original_list, &block)
+      # original_list = Dir.glob(pattern)
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
         @options[:mock_editor] ? yield(file.path) : file.blocking_edit(@editor)
       end
@@ -31,8 +31,8 @@ module Reenrb
       @changes = compare_lists(original_list, changed_list)
     end
 
-    def execute(pattern = nil, &block)
-      @changes ||= request(pattern, &block)
+    def execute(original_list, &block)
+      @changes ||= request(original_list, &block)
       @changes = @changes.map(&:execute)
     end
 

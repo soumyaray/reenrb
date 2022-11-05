@@ -5,6 +5,7 @@ require_relative "spec_helper"
 describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   before do
     recreate_example_dir
+    @old_glob = Dir.glob(EXAMPLE_ALL)
     @reen_mock_editor = Reenrb::Reen.new(options: { mock_editor: true })
   end
 
@@ -13,13 +14,13 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should know to make no changes" do
-    requests = @reen_mock_editor.request(EXAMPLE_ALL) { nil }
+    requests = @reen_mock_editor.request(@old_glob) { nil }
 
     _(requests.all? { |ch| ch.change == :none }).must_equal true
   end
 
   it "should consider renaming details correctly" do
-    requests = @reen_mock_editor.request(EXAMPLE_ALL) do |tmpfile_path|
+    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename LICSENSE.txt -> LICENSE.md
@@ -36,7 +37,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider deletion requests correctly" do
-    requests = @reen_mock_editor.request(EXAMPLE_ALL) do |tmpfile_path|
+    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Delete bin/myexec
@@ -52,7 +53,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider multiple renaming requests correctly" do
-    requests = @reen_mock_editor.request(EXAMPLE_ALL) do |tmpfile_path|
+    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
       # Rename 3 code files
