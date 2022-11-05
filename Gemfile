@@ -7,7 +7,11 @@ gemspec
 
 gem "rake", "~> 13.0"
 
-gem "minitest", "~> 5.0"
-gem "minitest-rg", "~> 5.0"
+group :development, :test do
+  gem "minitest", "~> 5.0"
+  gem "minitest-rg", "~> 5.0"
 
-gem "rubocop", "~> 1.21"
+  gem "rubocop", "~> 1.21"
+
+  gem "rerun", "~> 0.13"
+end

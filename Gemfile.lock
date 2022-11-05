@@ -7,7 +7,11 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    ffi (1.15.5)
     json (2.6.2)
+    listen (3.7.1)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     minitest (5.16.3)
     minitest-rg (5.2.0)
       minitest (~> 5.0)
@@ -16,7 +20,12 @@ GEM
       ast (~> 2.4.1)
     rainbow (3.1.1)
     rake (13.0.6)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
     regexp_parser (2.6.0)
+    rerun (0.13.1)
+      listen (~> 3.0)
     rexml (3.2.5)
     rubocop (1.38.0)
       json (~> 2.3)
@@ -41,6 +50,7 @@ DEPENDENCIES
   minitest-rg (~> 5.0)
   rake (~> 13.0)
   reenrb!
+  rerun (~> 0.13)
   rubocop (~> 1.21)
 
 BUNDLED WITH
