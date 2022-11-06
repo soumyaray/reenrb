@@ -1,12 +1,14 @@
 # Reenrb
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/reenrb`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Reen-rb is a utility written in Ruby (requires Ruby installed on your machine) that mass renames/deletes files by allowing the user to modify a list. It includes a command line executable called `reen` that opens the user's default editor to permit interactive changes, or can be used programatically by modifying the list of file names using a code block.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+To install the command line utility, use:
+
+    $ gem install reenrb
+
+Or add this line to your Ruby application's Gemfile for programmatic use:
 
 ```ruby
 gem 'reenrb'
@@ -22,13 +24,40 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Command line
+
+From command line, run `reen` with file list:
+
+    reen [file ...]
+
+Examples:
+
+    reen *
+    reen myfolder/**/*.mov
+
+### Ruby application
+
+Use programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block.
+
+```ruby
+require 'reenrb'
+
+glob = Dir.glob("*")
+reen = Reenrb::Reen.new(options: { mock_editor: true })
+
+reen.execute(glob) do |tmpfile_path|
+  lines = File.read(tmpfile_path).split("\n")
+
+  # Rename LICENSE.txt -> LICENSE.md
+  index = lines.index { |l| l.include? "LICENSE.txt" }
+  lines[index] = lines[index].gsub("txt", "md")
+  File.write(tmpfile_path, lines.join("\n"))
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 ## Contributing
 

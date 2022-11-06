@@ -23,7 +23,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
     requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
       lines = File.read(tmpfile_path).split("\n")
 
-      # Rename LICSENSE.txt -> LICENSE.md
+      # Rename LICENSE.txt -> LICENSE.md
       index = lines.index { |l| l.include? "LICENSE.txt" }
       lines[index] = lines[index].gsub("txt", "md")
       File.write(tmpfile_path, lines.join("\n"))
