@@ -20,13 +20,11 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider renaming details correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    requests = @reen_mock_editor.request(@old_glob) do |lines|
       # Rename LICENSE.txt -> LICENSE.md
       index = lines.index { |l| l.include? "LICENSE.txt" }
       lines[index] = lines[index].gsub("txt", "md")
-      File.write(tmpfile_path, lines.join("\n"))
+      lines
     end
 
     _(requests.changes_requeseted?).must_equal true
@@ -37,13 +35,11 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider deletion requests correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    requests = @reen_mock_editor.request(@old_glob) do |lines|
       # Delete bin/myexec
       index = lines.index { |l| l.include? "bin/myexec" }
       lines[index] = lines[index].prepend("- ")
-      File.write(tmpfile_path, lines.join("\n"))
+      lines
     end
 
     _(requests.changes_requeseted?).must_equal true
@@ -53,12 +49,9 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider multiple renaming requests correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    requests = @reen_mock_editor.request(@old_glob) do |lines|
       # Rename 3 code files
-      lines = lines.map { |l| l.gsub(".json", ".yaml") }
-      File.write(tmpfile_path, lines.join("\n"))
+      lines.map { |l| l.gsub(".json", ".yaml") }
     end
 
     renamed = requests.rename_requested

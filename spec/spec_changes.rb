@@ -23,13 +23,11 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should execute renaming correctly" do
-    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    tasks = @reen_mock_editor.execute(@old_glob) do |lines|
       # Rename LICENSE.txt -> LICENSE.md
       index = lines.index { |l| l.include? "LICENSE.txt" }
       lines[index] = lines[index].gsub("txt", "md")
-      File.write(tmpfile_path, lines.join("\n"))
+      lines
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
@@ -42,13 +40,11 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should execute deletion correctly" do
-    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    tasks = @reen_mock_editor.execute(@old_glob) do |lines|
       # Delete bin/myexec
       index = lines.index { |l| l.include? "bin/myexec" }
       lines[index] = lines[index].prepend("- ")
-      File.write(tmpfile_path, lines.join("\n"))
+      lines
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
@@ -63,12 +59,9 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   it "should execute multiple requests correctly" do
     _(@old_glob.select { |l| l.include?(".yaml") }.size).must_equal 0
 
-    tasks = @reen_mock_editor.execute(@old_glob) do |tmpfile_path|
-      lines = File.read(tmpfile_path).split("\n")
-
+    tasks = @reen_mock_editor.execute(@old_glob) do |lines|
       # Rename 3 code files
-      lines = lines.map { |l| l.gsub(".json", ".yaml") }
-      File.write(tmpfile_path, lines.join("\n"))
+      lines.map { |l| l.gsub(".json", ".yaml") }
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)

@@ -22,9 +22,15 @@ module Reenrb
       @options = options
     end
 
-    def request(original_list, &block)
+    def request(original_list, &block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
-        @options[:mock_editor] ? block.call(file.path) : file.blocking_edit(@editor)
+        if @options[:mock_editor]
+          lines = File.read(file.path).split("\n")
+          new_lines = block.call(lines) || lines
+          File.write(file.path, new_lines.join("\n"))
+        else
+          file.blocking_edit(@editor)
+        end
       end
 
       raise(Error, DEL_ERROR) if changed_list.size != original_list.size
