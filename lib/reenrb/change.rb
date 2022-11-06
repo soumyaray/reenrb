@@ -65,29 +65,17 @@ module Reenrb
 
     # Predicates
 
-    def request_directory?
-      Dir.exist? @original
-    end
+    def request_directory? = Dir.exist?(@original)
 
-    def request_delete?
-      @change == CHANGE::DELETE
-    end
+    def request_delete? = @change == CHANGE::DELETE
 
-    def request_empty_directory?
-      Dir.empty? @original
-    end
+    def request_empty_directory? = Dir.empty?(@original)
 
-    def executed?
-      @status == STATUS::EXECUTED
-    end
+    def executed? = @status == STATUS::EXECUTED
 
-    def request_full_directory?
-      request_directory? && !request_empty_directory?
-    end
+    def request_full_directory? = request_directory? && !request_empty_directory?
 
-    def executed_or_rejected?
-      %i[executed rejected].include? @status
-    end
+    def executed_or_rejected? = %i[executed rejected].include?(@status)
 
     # Decoration
 
