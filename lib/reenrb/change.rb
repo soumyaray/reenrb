@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "actions/delete"
+require_relative "actions/file_rename"
+require_relative "actions/nothing"
+
 module Reenrb
   # Change to an orignal file
   class Change
@@ -18,10 +22,16 @@ module Reenrb
       RENAME = :rename
     end
 
+    ACTION_HANDLER = {
+      CHANGE::NONE => Actions::DoNothing,
+      CHANGE::DELETE => Actions::FileDelete,
+      CHANGE::RENAME => Actions::FileRename
+    }.freeze
+
     CHANGES_DESC = {
-      none: "Nothing",
-      delete: "Deleting",
-      rename: "Renaming"
+      CHANGE::NONE => "Nothing",
+      CHANGE::DELETE => "Deleting",
+      CHANGE::RENAME => "Renaming"
     }.freeze
 
     def initialize(original, requested)
@@ -51,20 +61,14 @@ module Reenrb
     end
 
     def execute
-      return(self) if executed_or_rejected?
+      return(self) if not_accepted?
 
       @status = STATUS::EXECUTED
+      error = ACTION_HANDLER[@change].new(original, requested).call
 
-      case @change
-      when CHANGE::RENAME
-        begin
-          File.rename(@original, @requested)
-        rescue Errno::ENOENT
-          @status = STATUS::FAILED
-          @reason = "No such target file or directory"
-        end
-      when CHANGE::DELETE
-        File.delete(@original)
+      if error
+        @status = STATUS::FAILED
+        @reason = error
       end
 
       self
@@ -83,6 +87,8 @@ module Reenrb
     def request_empty_dir? = Dir.empty?(@original)
 
     def accepted? = @status == STATUS::ACCEPTED
+
+    def not_accepted? = !accepted?
 
     def executed? = @status == STATUS::EXECUTED
 
