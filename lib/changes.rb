@@ -58,7 +58,7 @@ module Reenrb
       list.map(&:change).all? :none
     end
 
-    def changes_requeseted?
+    def changes_requested?
       !no_changes_requested?
     end
 

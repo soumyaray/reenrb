@@ -27,7 +27,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       lines
     end
 
-    _(requests.changes_requeseted?).must_equal true
+    _(requests.changes_requested?).must_equal true
 
     renames = requests.rename_requested.list.first
     _(renames.original.include?("LICENSE.txt")).must_equal true
@@ -42,7 +42,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       lines
     end
 
-    _(requests.changes_requeseted?).must_equal true
+    _(requests.changes_requested?).must_equal true
 
     deletes = requests.delete_requested.list.first
     _(deletes.original.include?("bin/myexec")).must_equal true

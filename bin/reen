@@ -17,6 +17,6 @@ exit_with_error(EDITOR_MSG) if editor.empty?
 
 results = Reenrb::Reen.new(editor: editor).execute(file_list)
 
-changes = Reenrb::Changes.new(results).change_requested
+changes = results.change_requested
 
 puts changes.summarize

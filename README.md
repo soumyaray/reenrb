@@ -55,6 +55,8 @@ reen.execute(glob) do |tmpfile_path|
 end
 ```
 
+You may also pass a block with an editor specified, in which case the block is run after the editor has finished.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
