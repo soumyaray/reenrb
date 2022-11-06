@@ -14,7 +14,7 @@ module Reenrb
       self
     end
 
-    # Inspection
+    # Queries
 
     def rename_requested
       Changes.new(@list.select { |c| c.change == :rename })

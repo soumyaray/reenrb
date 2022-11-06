@@ -63,7 +63,7 @@ module Reenrb
       self
     end
 
-    # Inspection
+    # Predicates
 
     def request_directory?
       Dir.exist? @original

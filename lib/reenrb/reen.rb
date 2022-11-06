@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "reenrb/version"
-require_relative "reenrb/changes_file"
-require_relative "reenrb/change"
-require_relative "reenrb/changes"
-
 module Reenrb
-  class Error < StandardError; end
-
   # Renames pattern of files with given editor
   # Examples:
   #   Reenrb::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
