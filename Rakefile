@@ -13,6 +13,24 @@ task :respec do
   sh "rerun -c --ignore 'spec/fixtures/*' rake spec"
 end
 
+namespace :example do
+  task :config do
+    require_relative "spec/fixture_helper"
+  end
+
+  desc "Recreates the example fixture folder"
+  task :recreate => :config do
+    FixtureHelper.recreate_example_dir
+    puts "Example fixture recreated"
+  end
+
+  desc "Deletes the example fixture folder"
+  task :remove => :config do
+    FixtureHelper.remove_example_dirs
+    puts "Example fixture removed"
+  end
+end
+
 require "rubocop/rake_task"
 
 RuboCop::RakeTask.new

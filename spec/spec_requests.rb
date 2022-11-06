@@ -4,13 +4,13 @@ require_relative "spec_helper"
 
 describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   before do
-    recreate_example_dir
-    @old_glob = Dir.glob(EXAMPLE_ALL)
+    FixtureHelper.recreate_example_dir
+    @old_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
     @reen_mock_editor = Reenrb::Reen.new(options: { mock_editor: true })
   end
 
   after do
-    remove_example_dirs
+    FixtureHelper.remove_example_dirs
   end
 
   it "should know to make no changes" do

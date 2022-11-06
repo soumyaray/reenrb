@@ -3,15 +3,20 @@
 
 EDITOR_MSG = "Editor not set in $EDITOR or $VISUAL -- please set one of those environment variables"
 
+def exit_with_error(err)
+  puts err
+  exit(false)
+end
+
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require "reenrb"
 
-# executable requirements: (1) env shebang above; (2) file mode 0755
-# TODO: Return with error message instead of failing
-
-# fail ArgumentError, "Usage:  reen [pattern]\n" if ARGV.count > 1
-
 file_list = ARGV || Dir.glob("*")
-editor = ENV["VISUAL"] || ENV["EDITOR"] || raise(EDITOR_MSG)
+editor = ENV["VISUAL"] || ENV["EDITOR"]
+exit_with_error(EDITOR_MSG) if editor.empty?
 
 results = Reenrb::Reen.new(editor: editor).execute(file_list)
+
+changes = Reenrb::Changes.new(results).change_requested
+
+puts changes.summarize

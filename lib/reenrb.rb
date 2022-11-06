@@ -3,6 +3,7 @@
 require_relative "reenrb/version"
 require_relative "changes_file"
 require_relative "change"
+require_relative "changes"
 
 module Reenrb
   class Error < StandardError; end

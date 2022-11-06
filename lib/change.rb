@@ -5,17 +5,29 @@ module Reenrb
   class Change
     attr_reader :original, :requested, :change, :status
 
-    CHANGES = {
+    module STATUS
+      ACCEPTED = :accepted
+      REJECTED = :rejected
+      EXECUTED = :executed
+    end
+
+    module CHANGE
+      NONE = :none
+      DELETE = :delete
+      RENAME = :rename
+    end
+
+    CHANGES_DESC = {
       none: "Nothing",
-      delete: "Deleted",
-      rename: "Renamed"
+      delete: "Deleting",
+      rename: "Renaming"
     }.freeze
 
     def initialize(original, requested)
       @original = original
       @requested = requested
       @change = compare
-      @status = consider
+      consider
     end
 
     def compare
@@ -28,17 +40,37 @@ module Reenrb
       end
     end
 
+    def request_directory?
+      Dir.exist? @original
+    end
+
+    def request_delete?
+      @change == CHANGE::DELETE
+    end
+
+    def request_empty_directory?
+      Dir.empty? @original
+    end
+
+    def request_full_directory?
+      request_directory? && !request_empty_directory?
+    end
+
     def consider
-      if File.directory? @original
-        @status = :rejected
-        @reason = "Directories cannot be changed"
+      if request_full_directory? && request_delete?
+        @status = STATUS::REJECTED
+        @reason = "Directories with files cannot be changed"
       else
-        @status = :accepted
+        @status = STATUS::ACCEPTED
       end
     end
 
+    def executed_or_rejected
+      %i[executed rejected].include? @status
+    end
+
     def execute
-      return(self) if [:executed, :rejected].include? @status
+      return(self) if executed_or_rejected
 
       case @change
       when :rename
@@ -47,7 +79,7 @@ module Reenrb
         File.delete(@original)
       end
 
-      @status = :executed
+      @status = STATUS::EXECUTED
       self
     end
 
@@ -59,7 +91,10 @@ module Reenrb
         else
           @original
         end
-      "#{CHANGES[@change]}: #{file_desc}"
+
+      reason_desc = @status == STATUS::REJECTED ? " (failed: #{@reason})" : ""
+
+      "#{CHANGES_DESC[@change]}: #{file_desc}#{reason_desc}"
     end
   end
 end
