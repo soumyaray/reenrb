@@ -9,6 +9,7 @@ module Reenrb
       ACCEPTED = :accepted
       REJECTED = :rejected
       EXECUTED = :executed
+      FAILED   = :failed
     end
 
     module CHANGE
@@ -52,14 +53,20 @@ module Reenrb
     def execute
       return(self) if executed_or_rejected?
 
+      @status = STATUS::EXECUTED
+
       case @change
       when CHANGE::RENAME
-        File.rename(@original, @requested)
+        begin
+          File.rename(@original, @requested)
+        rescue Errno::ENOENT
+          @status = STATUS::FAILED
+          @reason = "No such target file or directory"
+        end
       when CHANGE::DELETE
         File.delete(@original)
       end
 
-      @status = STATUS::EXECUTED
       self
     end
 
@@ -81,6 +88,8 @@ module Reenrb
 
     def rejected? = @status == STATUS::REJECTED
 
+    def failed? = @status == STATUS::FAILED
+
     def request_full_dir? = request_dir? && !request_empty_dir?
 
     def executed_or_rejected? = %i[executed rejected].include?(@status)
@@ -96,7 +105,7 @@ module Reenrb
           @original
         end
 
-      reason_desc = @status == STATUS::REJECTED ? " (failed: #{@reason})" : ""
+      reason_desc = rejected? || failed? ? " (failed: #{@reason})" : ""
 
       "#{CHANGES_DESC[@change]}: #{file_desc}#{reason_desc}"
     end
