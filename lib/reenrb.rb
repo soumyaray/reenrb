@@ -11,7 +11,7 @@ module Reenrb
   # Renames pattern of files with given editor
   # Examples:
   #   Reenrb::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
-  #   Reenrb::Reen.new(options: {mock_editor: true}).call("spec/fixtures/example/*") { ... }
+  #   Reenrb::Reen.new(editor: nil).call("spec/fixtures/example/*") { ... }
   class Reen
     DEL_ERROR = "Do not delete any file/folder names"
 
@@ -24,12 +24,12 @@ module Reenrb
 
     def request(original_list, &block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
-        if @options[:mock_editor]
+        file.blocking_edit(@editor) if @editor
+
+        if block
           lines = File.read(file.path).split("\n")
           new_lines = block.call(lines) || lines
           File.write(file.path, new_lines.join("\n"))
-        else
-          file.blocking_edit(@editor)
         end
       end
 

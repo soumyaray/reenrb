@@ -43,7 +43,7 @@ Use programmatically using the `reenrb` gem. In the example below, we specify th
 require 'reenrb'
 
 glob = Dir.glob("*")
-reen = Reenrb::Reen.new(options: { mock_editor: true })
+reen = Reenrb::Reen.new(editor: nil)
 
 reen.execute(glob) do |tmpfile_path|
   lines = File.read(tmpfile_path).split("\n")

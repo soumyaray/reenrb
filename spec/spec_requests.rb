@@ -6,7 +6,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   before do
     FixtureHelper.recreate_example_dir
     @old_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
-    @reen_mock_editor = Reenrb::Reen.new(options: { mock_editor: true })
+    @reen_mock_editor = Reenrb::Reen.new(editor: nil)
   end
 
   after do
@@ -14,7 +14,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should know to make no changes" do
-    requests = @reen_mock_editor.request(@old_glob) { nil }
+    requests = @reen_mock_editor.request(@old_glob)
 
     _(requests.no_changes_requested?).must_equal true
   end
