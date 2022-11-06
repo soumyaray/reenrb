@@ -12,7 +12,7 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require "reenrb"
 
 file_list = ARGV || Dir.glob("*")
-editor = ENV["VISUAL"] || ENV["EDITOR"]
+editor = ENV["VISUAL"] || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
 exit_with_error(EDITOR_MSG) if editor.empty?
 
 results = Reenrb::Reen.new(editor: editor).execute(file_list)

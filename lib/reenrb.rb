@@ -24,7 +24,7 @@ module Reenrb
     def request(original_list, &block)
       # original_list = Dir.glob(pattern)
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
-        @options[:mock_editor] ? yield(file.path) : file.blocking_edit(@editor)
+        @options[:mock_editor] ? block.call(file.path) : file.blocking_edit(@editor)
       end
 
       raise(Error, DEL_ERROR) if changed_list.size != original_list.size
