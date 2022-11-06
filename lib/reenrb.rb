@@ -9,8 +9,9 @@ module Reenrb
   class Error < StandardError; end
 
   # Renames pattern of files with given editor
-  # Example:
+  # Examples:
   #   Reenrb::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
+  #   Reenrb::Reen.new(options: {mock_editor: true}).call("spec/fixtures/example/*") { ... }
   class Reen
     DEL_ERROR = "Do not delete any file/folder names"
 
@@ -22,7 +23,6 @@ module Reenrb
     end
 
     def request(original_list, &block)
-      # original_list = Dir.glob(pattern)
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
         @options[:mock_editor] ? block.call(file.path) : file.blocking_edit(@editor)
       end
@@ -30,11 +30,12 @@ module Reenrb
       raise(Error, DEL_ERROR) if changed_list.size != original_list.size
 
       @changes = compare_lists(original_list, changed_list)
+                 .then { |change_array| Changes.new(change_array) }
     end
 
     def execute(original_list, &block)
       @changes ||= request(original_list, &block)
-      @changes = @changes.map(&:execute)
+      @changes = @changes.execute!
     end
 
     private

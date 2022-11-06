@@ -40,6 +40,31 @@ module Reenrb
       end
     end
 
+    def consider
+      if request_full_directory? && request_delete?
+        @status = STATUS::REJECTED
+        @reason = "Directories with files cannot be changed"
+      else
+        @status = STATUS::ACCEPTED
+      end
+    end
+
+    def execute
+      return(self) if executed_or_rejected?
+
+      case @change
+      when :rename
+        File.rename(@original, @requested)
+      when :delete
+        File.delete(@original)
+      end
+
+      @status = STATUS::EXECUTED
+      self
+    end
+
+    # Inspection
+
     def request_directory?
       Dir.exist? @original
     end
@@ -52,36 +77,19 @@ module Reenrb
       Dir.empty? @original
     end
 
+    def executed?
+      @status == STATUS::EXECUTED
+    end
+
     def request_full_directory?
       request_directory? && !request_empty_directory?
     end
 
-    def consider
-      if request_full_directory? && request_delete?
-        @status = STATUS::REJECTED
-        @reason = "Directories with files cannot be changed"
-      else
-        @status = STATUS::ACCEPTED
-      end
-    end
-
-    def executed_or_rejected
+    def executed_or_rejected?
       %i[executed rejected].include? @status
     end
 
-    def execute
-      return(self) if executed_or_rejected
-
-      case @change
-      when :rename
-        File.rename(@original, @requested)
-      when :delete
-        File.delete(@original)
-      end
-
-      @status = STATUS::EXECUTED
-      self
-    end
+    # Decoration
 
     def to_s
       file_desc =

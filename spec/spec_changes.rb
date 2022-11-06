@@ -15,8 +15,11 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
 
   it "should know to make no changes" do
     tasks = @reen_mock_editor.execute(@old_glob) { nil }
-    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
-    _(@old_glob == Dir.glob(FixtureHelper::EXAMPLE_ALL)).must_equal true
+
+    new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
+
+    _(tasks.all_executed?).must_equal true
+    _(@old_glob).must_equal new_glob
   end
 
   it "should execute renaming correctly" do
@@ -31,8 +34,8 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
 
-    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
-    _(@old_glob == new_glob).must_equal false
+    _(tasks.all_executed?).must_equal true
+    _(@old_glob).wont_equal new_glob
 
     index = @old_glob.index { |l| l.include? "LICENSE.txt" }
     _(new_glob[index]).must_include "LICENSE.md"
@@ -50,8 +53,8 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
 
-    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
-    _(@old_glob == new_glob).must_equal false
+    _(tasks.all_executed?).must_equal true
+    _(@old_glob).wont_equal new_glob
 
     _(new_glob.size).must_equal @old_glob.size - 1
     _(new_glob.select { |l| l.include?("bin/myexec") }).must_equal []
@@ -70,8 +73,8 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
 
-    _(tasks.all? { |ch| ch.status == :executed }).must_equal true
-    _(@old_glob == new_glob).must_equal false
+    _(tasks.all_executed?).must_equal true
+    _(@old_glob).wont_equal new_glob
 
     _(new_glob.select { |l| l.include?(".json") }.size).must_equal 0
     _(new_glob.select { |l| l.include?(".yaml") }.size).must_equal 3

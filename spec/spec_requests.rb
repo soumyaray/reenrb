@@ -16,7 +16,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   it "should know to make no changes" do
     requests = @reen_mock_editor.request(@old_glob) { nil }
 
-    _(requests.all? { |ch| ch.change == :none }).must_equal true
+    _(requests.no_changes_requested?).must_equal true
   end
 
   it "should consider renaming details correctly" do
@@ -29,9 +29,9 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    _(requests.all? { |ch| ch.change == :none }).must_equal false
+    _(requests.changes_requeseted?).must_equal true
 
-    renames = requests.select { |ch| ch.change == :rename }.first
+    renames = requests.rename_requested.list.first
     _(renames.original.include?("LICENSE.txt")).must_equal true
     _(renames.requested.include?("LICENSE.md")).must_equal true
   end
@@ -46,9 +46,9 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    _(requests.all? { |ch| ch.change == :none }).must_equal false
+    _(requests.changes_requeseted?).must_equal true
 
-    deletes = requests.select { |ch| ch.change == :delete }.first
+    deletes = requests.delete_requested.list.first
     _(deletes.original.include?("bin/myexec")).must_equal true
   end
 
@@ -61,7 +61,7 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
       File.write(tmpfile_path, lines.join("\n"))
     end
 
-    renamed = requests.select { |ch| ch.change == :rename }
-    _(renamed.size).must_equal 3
+    renamed = requests.rename_requested
+    _(renamed.count).must_equal 3
   end
 end

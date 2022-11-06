@@ -9,9 +9,12 @@ module Reenrb
       @list = changes_list
     end
 
-    def none
-      Changes.new(@list.select { |c| c.change == :none })
+    def execute!
+      @list.map(&:execute)
+      self
     end
+
+    # Inspection
 
     def rename_requested
       Changes.new(@list.select { |c| c.change == :rename })
@@ -37,10 +40,30 @@ module Reenrb
       Changes.new(@list.select { |c| c.status == :executed })
     end
 
+    def count
+      @list.size
+    end
+
+    # Decoration
+
     def summarize
       return "Nothing changed" if @list.empty?
 
       @list.map(&:to_s).join("\n")
+    end
+
+    # Predicates
+
+    def no_changes_requested?
+      list.map(&:change).all? :none
+    end
+
+    def changes_requeseted?
+      !no_changes_requested?
+    end
+
+    def all_executed?
+      @list.all?(&:executed?)
     end
   end
 end
