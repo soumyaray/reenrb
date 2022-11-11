@@ -1,22 +1,52 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-EDITOR_MSG = "Editor not set in $EDITOR or $VISUAL -- please set one of those environment variables"
-
-def exit_with_error(err)
-  puts err
-  exit(false)
-end
-
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require "reenrb"
+require "optparse"
 
-file_list = ARGV || Dir.glob("*")
-editor = ENV["VISUAL"] || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
-exit_with_error(EDITOR_MSG) if editor.empty?
+# Reen command line application
+class ReenCLI
+  EDITOR_MSG = "Editor not set in $EDITOR or $VISUAL -- please set one of those environment variables"
+  Options = Struct.new(:editor)
 
-results = Reenrb::Reen.new(editor: editor).execute(file_list)
+  attr_reader :options, :files
 
-changes = results.change_requested
+  def initialize(args)
+    @options = Options.new(ENV["VISUAL"] || ENV["EDITOR"]) # rubocop:disable Style/FetchEnvVar
+    optparse = OptionParser.new { |parser| setup_options(parser) }
+    optparse.parse!(args, into: @options)
 
-puts changes.summarize
+    @files = args # remaining arguments after parser has extracted options
+  rescue StandardError
+    exit_with_msg(optparse)
+  end
+
+  def setup_options(parser)
+    parser.banner = "Usage: reen files [options]"
+    parser.version = Reenrb::VERSION
+
+    parser.on("-e", "--editor EDITOR", "Specify EDITOR to use")
+
+    parser.on("-h", "--help", "Show help for options") do
+      exit_with_msg(parser)
+    end
+  end
+
+  def exit_with_msg(message)
+    puts message
+    exit(false)
+  end
+
+  def call
+    file_list = files.empty? ? Dir.glob("*") : files
+    exit_with_msg(EDITOR_MSG) unless options.editor
+
+    results = Reenrb::Reen.new(editor: options.editor).execute(file_list)
+    changes = results.change_requested
+
+    puts changes.summarize
+  end
+end
+
+ReenCLI.new(ARGV).call
