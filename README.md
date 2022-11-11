@@ -28,12 +28,21 @@ Or install it yourself as:
 
 From command line, run `reen` with file list:
 
-    reen [file ...]
+    reen [files=* ...] [options]
+
+where `files` are a list of files or wildcard pattern (defaults to `*`; see examples)
+
+Options include:
+
+- `--help` or `-h`' to see options help
+- `--editor EDITOR` or `-e EDITOR`' to set the editor (defaults to $VISUAL or $EDITOR otherwise) such as `emacs` or `vi`. For Visual Studio Code use `'code -w'` to block until editor finishes.
 
 Examples:
 
-    reen *
+    reen **/*
     reen myfolder/**/*.mov
+    reen *.md --editor vi
+    reen --editor 'code -w'
 
 ### Ruby application
 
@@ -45,13 +54,11 @@ require 'reenrb'
 glob = Dir.glob("*")
 reen = Reenrb::Reen.new(editor: nil)
 
-reen.execute(glob) do |tmpfile_path|
-  lines = File.read(tmpfile_path).split("\n")
-
+reen.execute(glob) do |lines|
   # Rename LICENSE.txt -> LICENSE.md
   index = lines.index { |l| l.include? "LICENSE.txt" }
   lines[index] = lines[index].gsub("txt", "md")
-  File.write(tmpfile_path, lines.join("\n"))
+  lines
 end
 ```
 
