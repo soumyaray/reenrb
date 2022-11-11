@@ -36,6 +36,7 @@ Options include:
 
 - `--help` or `-h`' to see options help
 - `--editor EDITOR` or `-e EDITOR`' to set the editor (defaults to $VISUAL or $EDITOR otherwise) such as `emacs` or `vi`. For Visual Studio Code use `'code -w'` to block until editor finishes.
+- `--review` or `-r` request to review and confirm changes
 
 Examples:
 

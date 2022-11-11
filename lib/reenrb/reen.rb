@@ -34,7 +34,7 @@ module Reenrb
 
     def execute(original_list, &block)
       @changes ||= request(original_list, &block)
-      @changes = @changes.execute!
+      @changes = @changes.execute_all
     end
 
     private

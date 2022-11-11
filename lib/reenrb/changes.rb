@@ -11,7 +11,7 @@ module Reenrb
       @list = changes_list
     end
 
-    def execute!
+    def execute_all
       @list.map(&:execute)
       self
     end
@@ -40,6 +40,14 @@ module Reenrb
 
     def executed
       Changes.new(@list.select(&:executed?))
+    end
+
+    def failed
+      Changes.new(@list.select(&:failed?))
+    end
+
+    def any?
+      !@list.empty?
     end
 
     def count
