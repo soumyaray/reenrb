@@ -11,6 +11,8 @@ module Reenrb
 
     COMMENTS
 
+    attr_accessor :list
+
     def initialize(requested_list)
       @list_file = Tempfile.new("reenrb-")
       @list_file.write(INSTRUCTIONS)
@@ -18,14 +20,20 @@ module Reenrb
       @list_file.close
     end
 
-    def path
-      @list_file.path
+    def allow_changes(&block)
+      await_editor(@editor) if @editor
+      @list = File.read(path).split("\n").map(&:strip)
+                  .reject { |line| line.start_with?("#") || line.empty? }
+
+      block&.call(self)
+      # @list = (block.call(@list) || @list) if block
+      @list
     end
 
-    def allow_changes(&block)
-      block.call(self)
-      lines = File.read(path).split("\n").map(&:strip)
-      lines.reject { |line| line.start_with?("#") || line.empty? }
+    private
+
+    def path
+      @list_file.path
     end
 
     def await_editor(editor)

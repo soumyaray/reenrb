@@ -4,7 +4,7 @@ require "bundler/gem_tasks"
 require "rake/testtask"
 
 Rake::TestTask.new(:spec) do |t|
-  t.libs << "tspecest"
+  t.libs << "spec"
   t.libs << "lib"
   t.test_files = FileList["spec/**/spec_*.rb"]
 end
@@ -14,18 +14,18 @@ task :respec do
 end
 
 namespace :example do
-  task :config do
+  task :helper do
     require_relative "spec/fixture_helper"
   end
 
   desc "Recreates the example fixture folder"
-  task :recreate => :config do
+  task :recreate => :helper do
     FixtureHelper.recreate_example_dir
     puts "Example fixture recreated"
   end
 
   desc "Deletes the example fixture folder"
-  task :remove => :config do
+  task :remove => :helper do
     FixtureHelper.remove_example_dirs
     puts "Example fixture removed"
   end

@@ -14,21 +14,13 @@ Or add this line to your Ruby application's Gemfile for programmatic use:
 gem 'reenrb'
 ```
 
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install reenrb
-
 ## Usage
 
 ### Command line
 
 From command line, run `reen` with file list:
 
-    reen [files=* ...] [options]
+    reen files [options]
 
 where `files` are a list of files or wildcard pattern (defaults to `*`; see examples)
 
@@ -40,10 +32,11 @@ Options include:
 
 Examples:
 
-    reen **/*
-    reen myfolder/**/*.mov
-    reen *.md --editor vi
-    reen --editor 'code -w'
+    reen                    # reen all files (*)
+    reen **/*               # reen all files in all subfolders
+    reen myfolder/**/*.mov  # reen all mov files in subfolders
+    reen *.md --editor vi   # reen all markdown files using vi
+    reen --editor 'code -w' # reen all markdown files using vscode
 
 ### Ruby application
 
@@ -55,11 +48,10 @@ require 'reenrb'
 glob = Dir.glob("*")
 reen = Reenrb::Reen.new(editor: nil)
 
-reen.execute(glob) do |lines|
+reen.execute(glob) do |file|
   # Rename LICENSE.txt -> LICENSE.md
-  index = lines.index { |l| l.include? "LICENSE.txt" }
-  lines[index] = lines[index].gsub("txt", "md")
-  lines
+  index = file.list.index { |l| l.include? "LICENSE.txt" }
+  file.list[index] = file.list[index].gsub("txt", "md")
 end
 ```
 

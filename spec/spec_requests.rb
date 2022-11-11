@@ -20,11 +20,10 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider renaming details correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |lines|
+    requests = @reen_mock_editor.request(@old_glob) do |file|
       # Rename LICENSE.txt -> LICENSE.md
-      index = lines.index { |l| l.include? "LICENSE.txt" }
-      lines[index] = lines[index].gsub("txt", "md")
-      lines
+      index = file.list.index { |l| l.include? "LICENSE.txt" }
+      file.list[index] = file.list[index].gsub("txt", "md")
     end
 
     _(requests.changes_requested?).must_equal true
@@ -35,11 +34,10 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider deletion requests correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |lines|
+    requests = @reen_mock_editor.request(@old_glob) do |file|
       # Delete bin/myexec
-      index = lines.index { |l| l.include? "bin/myexec" }
-      lines[index] = lines[index].prepend("- ")
-      lines
+      index = file.list.index { |l| l.include? "bin/myexec" }
+      file.list[index] = file.list[index].prepend("- ")
     end
 
     _(requests.changes_requested?).must_equal true
@@ -49,9 +47,9 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should consider multiple renaming requests correctly" do
-    requests = @reen_mock_editor.request(@old_glob) do |lines|
+    requests = @reen_mock_editor.request(@old_glob) do |file|
       # Rename 3 code files
-      lines.map { |l| l.gsub(".json", ".yaml") }
+      file.list.map! { |l| l.gsub(".json", ".yaml") }
     end
 
     renamed = requests.rename_requested
