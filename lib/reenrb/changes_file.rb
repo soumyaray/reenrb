@@ -5,8 +5,15 @@ require "tempfile"
 module Reenrb
   # Manages a temporary file with requested changes
   class ChangesFile
+    INSTRUCTIONS = <<~COMMENTS
+      # Edit the names of any files/folders to rename or move them
+      # - Put a preceeding dash to delete a file or empty folder
+
+    COMMENTS
+
     def initialize(requested_list)
       @list_file = Tempfile.new("reenrb-")
+      @list_file.write(INSTRUCTIONS)
       @list_file.write(requested_list.join("\n"))
       @list_file.close
     end
@@ -17,10 +24,11 @@ module Reenrb
 
     def allow_changes(&block)
       block.call(self)
-      File.read(path).split("\n")
+      lines = File.read(path).split("\n").map(&:strip)
+      lines.reject { |line| line.start_with?("#") || line.empty? }
     end
 
-    def blocking_edit(editor)
+    def await_editor(editor)
       `#{editor} #{@list_file.path}`
     end
   end

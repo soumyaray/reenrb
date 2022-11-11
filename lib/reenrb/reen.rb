@@ -17,7 +17,7 @@ module Reenrb
 
     def request(original_list, &block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       changed_list = ChangesFile.new(original_list).allow_changes do |file|
-        file.blocking_edit(@editor) if @editor
+        file.await_editor(@editor) if @editor
 
         if block
           lines = File.read(file.path).split("\n")
