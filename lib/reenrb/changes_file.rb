@@ -20,13 +20,12 @@ module Reenrb
       @list_file.close
     end
 
-    def allow_changes(&block)
-      await_editor(@editor) if @editor
+    def allow_changes(editor, &block)
+      await_editor(editor) if editor
       @list = File.read(path).split("\n").map(&:strip)
                   .reject { |line| line.start_with?("#") || line.empty? }
 
       block&.call(self)
-      # @list = (block.call(@list) || @list) if block
       @list
     end
 

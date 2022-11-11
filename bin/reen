@@ -25,8 +25,8 @@ class ReenCLI
     exit_with_msg(EDITOR_MSG) unless options.editor
 
     @files = args.empty? ? Dir.glob("*") : args
-    @requests = Reenrb::Reen.new(editor: options.editor).request(files)
-  rescue StandardError
+  rescue OptionParser::InvalidOption => e
+    puts "#{e.message}\n\n"
     exit_with_msg(optparse)
   end
 
@@ -61,10 +61,11 @@ class ReenCLI
   end
 
   def user_review?
-    options.review && @requests.changes_requested?
+    @options.review && @requests.changes_requested?
   end
 
   def call
+    @requests = Reenrb::Reen.new(editor: options.editor).request(files)
     review_changes if user_review?
 
     changes = @requests
@@ -79,4 +80,8 @@ class ReenCLI
   end
 end
 
-ReenCLI.new(ARGV).call
+begin
+  ReenCLI.new(ARGV).call
+rescue Reenrb::Error => e
+  puts "#{e.message}\n"
+end
