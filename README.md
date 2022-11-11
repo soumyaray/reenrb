@@ -2,6 +2,8 @@
 
 Reen-rb is a utility written in Ruby (requires Ruby installed on your machine) that mass renames/deletes files by allowing the user to modify a list. It includes a command line executable called `reen` that opens the user's default editor to permit interactive changes, or can be used programatically by modifying the list of file names using a code block.
 
+[![Reen usage introduction](https://img.youtube.com/vi/yJfDRfJr3os/0.jpg)](https://www.youtube.com/watch?v=yJfDRfJr3os)
+
 ## Installation
 
 To install the command line utility, use:
