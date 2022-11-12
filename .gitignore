@@ -6,6 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+/_*/
 
 Gemfile.lock
 spec/fixtures/example/*
