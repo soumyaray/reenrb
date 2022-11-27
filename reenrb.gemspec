@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rerun", "~> 0.13"
   spec.add_development_dependency "rubocop", "~> 1.21"
   spec.add_development_dependency "rubyzip", "~> 2.3"
+  spec.add_development_dependency "simplecov"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

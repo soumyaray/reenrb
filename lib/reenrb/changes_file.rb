@@ -36,7 +36,7 @@ module Reenrb
     end
 
     def await_editor(editor)
-      `#{editor} #{@list_file.path}`
+      system("#{editor} #{@list_file.path}")
     end
   end
 end
