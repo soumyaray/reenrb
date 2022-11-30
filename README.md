@@ -40,9 +40,55 @@ Examples:
     reen *.md --editor vi   # reen all markdown files using vi
     reen --editor 'code -w' # reen all markdown files using vscode
 
+### Specifying changes through the editor
+
+Upon running Reen on file list, your editor will open with a list of file/folder names. For example:
+
+```
+LICENSE.txt
+README.md
+SETUP.txt
+bin
+bin/help
+bin/myexec
+tests
+tests/fixtures
+tests/fixtures/a.json
+tests/fixtures/b.json
+tests/fixtures/c.json
+tests/helper.code
+tests/tests.code
+```
+
+Specify changes to each file you wish changed modifying it in your editor:
+
+- Change the file/folder name to rename it (the rename could cause a move if you change its path; restrictions will be reported)
+- Prepend using `-` to delete a file or empty folder
+- Prepend using `--` to force delete a file or non-empty folder (recursively)
+
+For example, if we wanted to change the above list of files/folders in the editor to (a) rename `LICENSE.txt` to `LICENSE.md`, (b) delete `SETUP.txt`, and (c) recursively delete the `bin/` folder, then we would change the filenames to look like:
+
+```
+LICENSE.md
+README.md
+-SETUP.txt
+--bin
+bin/help
+bin/myexec
+tests
+tests/fixtures
+tests/fixtures/a.json
+tests/fixtures/b.json
+tests/fixtures/c.json
+tests/helper.code
+tests/tests.code
+```
+
+Upon saving and exiting the editor, Reen will execute all the changes.
+
 ### Ruby application
 
-Use programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block.
+Use Reen programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block.
 
 ```ruby
 require 'reenrb'
