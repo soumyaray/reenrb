@@ -3,7 +3,7 @@
 module Reenrb
   module Actions
     # Deletes a file
-    class FileForceDelete
+    class ForceDelete
       def initialize(old_name, new_name)
         @old_name = old_name
         @new_name = new_name

@@ -3,7 +3,7 @@
 module Reenrb
   module Actions
     # Deletes a file
-    class FileDelete
+    class Delete
       def initialize(old_name, new_name)
         @old_name = old_name
         @new_name = new_name

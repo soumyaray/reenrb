@@ -3,7 +3,7 @@
 module Reenrb
   module Actions
     # Renames files
-    class FileRename
+    class Rename
       def initialize(old_name, new_name)
         @old_name = old_name
         @new_name = new_name

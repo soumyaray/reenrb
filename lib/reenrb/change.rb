@@ -31,9 +31,9 @@ module Reenrb
 
     ACTION_HANDLER = {
       CHANGE::NONE => Actions::DoNothing,
-      CHANGE::DELETE => Actions::FileDelete,
-      CHANGE::FORCE_DELETE => Actions::FileForceDelete,
-      CHANGE::RENAME => Actions::FileRename
+      CHANGE::DELETE => Actions::Delete,
+      CHANGE::FORCE_DELETE => Actions::ForceDelete,
+      CHANGE::RENAME => Actions::Rename
     }.freeze
 
     CHANGES_DESC = {
