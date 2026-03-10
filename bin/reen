@@ -34,7 +34,12 @@ class ReenCLI
     parser.banner = "Usage: reen files [options]"
     parser.version = Reenrb::VERSION
 
-    parser.on("-e", "--editor EDITOR", "Specify EDITOR to use")
+    parser.on("-e", "--editor [EDITOR]", "Use EDITOR (default: $EDITOR)") do |ed|
+      @options.editor = ed || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
+    end
+    parser.on("-v", "--visual [EDITOR]", "Use EDITOR (default: $VISUAL)") do |ed|
+      @options.editor = ed || ENV["VISUAL"] # rubocop:disable Style/FetchEnvVar
+    end
     parser.on("-r", "--review", "Require review and confirmation of changes")
 
     parser.on("-h", "--help", "Show help for options") do

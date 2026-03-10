@@ -28,17 +28,22 @@ where `files` are a list of files or wildcard pattern (defaults to `*`; see exam
 
 Options include:
 
-- `--help` or `-h`' to see options help
-- `--editor EDITOR` or `-e EDITOR` to set the editor (defaults to `$VISUAL` or `$EDITOR`). The editor must block until the file is closed — for VS Code use `'code -w'`, for Sublime use `'subl -w'`.
+- `--help` or `-h` to see options help
+- `--editor [EDITOR]` or `-e [EDITOR]` to use a specific editor, or just `-e` to use `$EDITOR`
+- `--visual [EDITOR]` or `-v [EDITOR]` to use a specific editor, or just `-v` to use `$VISUAL`
 - `--review` or `-r` request to review and confirm changes
+
+The editor must block until the file is closed — for VS Code use `'code -w'`, for Sublime use `'subl -w'`. Without `-e` or `-v`, Reen defaults to `$VISUAL` then `$EDITOR`.
 
 Examples:
 
     reen                    # reen all files (*)
     reen **/*               # reen all files in all subfolders
     reen myfolder/**/*.mov  # reen all mov files in subfolders
-    reen *.md --editor vi   # reen all markdown files using vi
-    reen --editor 'code -w' # reen all markdown files using vscode
+    reen -e                 # reen all files using $EDITOR
+    reen -v                 # reen all files using $VISUAL
+    reen -e vi *.md         # reen all markdown files using vi
+    reen --editor 'code -w' # reen all files using vscode
 
 ### Specifying changes through the editor
 
