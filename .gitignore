@@ -11,3 +11,15 @@
 Gemfile.lock
 spec/fixtures/example/*
 spec/fixtures/example_old/*
+
+# AI tooling
+CLAUDE.local.md
+.claude/*
+!.claude/CLAUDE.md
+!.claude/settings.json
+!.claude/skills/
+coverage/
+
+# Sideways files (see tool: https://github.com/soumyaray/sideways)
+.swcopy
+.swsymlink
