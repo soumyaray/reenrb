@@ -13,7 +13,7 @@ describe "PathEntry" do # rubocop:disable Metrics/BlockLength
 
   it "should wrap a file path and report it is a file" do
     file_path = Dir.glob(FixtureHelper::EXAMPLE_ALL).find { |f| File.file?(f) }
-    entry = Reenrb::PathEntry.new(file_path)
+    entry = Reen::PathEntry.new(file_path)
 
     _(entry.path).must_equal file_path
     _(entry.file?).must_equal true
@@ -22,7 +22,7 @@ describe "PathEntry" do # rubocop:disable Metrics/BlockLength
 
   it "should wrap a directory path and report it is a directory" do
     dir_path = Dir.glob(FixtureHelper::EXAMPLE_ALL).find { |f| File.directory?(f) }
-    entry = Reenrb::PathEntry.new(dir_path)
+    entry = Reen::PathEntry.new(dir_path)
 
     _(entry.path).must_equal dir_path
     _(entry.dir?).must_equal true
@@ -32,7 +32,7 @@ describe "PathEntry" do # rubocop:disable Metrics/BlockLength
   it "should detect an empty directory" do
     empty_dir = File.join(FixtureHelper::EXAMPLE_DIR, "empty_test_dir")
     FileUtils.mkdir_p(empty_dir)
-    entry = Reenrb::PathEntry.new(empty_dir)
+    entry = Reen::PathEntry.new(empty_dir)
 
     _(entry.dir?).must_equal true
     _(entry.empty_dir?).must_equal true
@@ -43,7 +43,7 @@ describe "PathEntry" do # rubocop:disable Metrics/BlockLength
     full_dir = Dir.glob(FixtureHelper::EXAMPLE_ALL).find do |f|
       File.directory?(f) && !Dir.empty?(f)
     end
-    entry = Reenrb::PathEntry.new(full_dir)
+    entry = Reen::PathEntry.new(full_dir)
 
     _(entry.dir?).must_equal true
     _(entry.empty_dir?).must_equal false
@@ -62,23 +62,23 @@ describe "PathEntryList" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should construct from array of strings and iterate as PathEntry objects" do
-    list = Reenrb::PathEntryList.new(@file_list)
+    list = Reen::PathEntryList.new(@file_list)
 
     list.each do |entry|
-      _(entry).must_be_kind_of Reenrb::PathEntry
+      _(entry).must_be_kind_of Reen::PathEntry
     end
 
     _(list.count).must_equal @file_list.size
   end
 
   it "should return array of path strings via #paths" do
-    list = Reenrb::PathEntryList.new(@file_list)
+    list = Reen::PathEntryList.new(@file_list)
 
     _(list.paths).must_equal @file_list
   end
 
   it "should serialize to numbered lines with auto-sized width" do
-    list = Reenrb::PathEntryList.new(@file_list)
+    list = Reen::PathEntryList.new(@file_list)
     numbered = list.to_numbered
 
     # Width should be based on list size (e.g., 2 digits for 10-99 items)
@@ -90,10 +90,10 @@ describe "PathEntryList" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should parse numbered lines back to number-keyed entries" do
-    list = Reenrb::PathEntryList.new(@file_list)
+    list = Reen::PathEntryList.new(@file_list)
     numbered = list.to_numbered
 
-    parsed = Reenrb::PathEntryList.from_numbered(numbered)
+    parsed = Reen::PathEntryList.from_numbered(numbered)
 
     # parsed should be a hash of { number => path_string }
     @file_list.each_with_index do |path, i|
@@ -102,12 +102,12 @@ describe "PathEntryList" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should parse reordered numbered lines correctly" do
-    list = Reenrb::PathEntryList.new(@file_list)
+    list = Reen::PathEntryList.new(@file_list)
     numbered = list.to_numbered
 
     # Reverse the order
     reordered = numbered.reverse
-    parsed = Reenrb::PathEntryList.from_numbered(reordered)
+    parsed = Reen::PathEntryList.from_numbered(reordered)
 
     # Numbers still map to original paths regardless of line order
     @file_list.each_with_index do |path, i|

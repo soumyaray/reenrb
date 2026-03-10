@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Reenrb
+module Reen
   # Wraps a file path and answers filesystem queries
   class PathEntry
     attr_reader :path

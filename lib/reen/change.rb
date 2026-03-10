@@ -5,7 +5,7 @@ require_relative "actions/force_delete"
 require_relative "actions/rename"
 require_relative "actions/nothing"
 
-module Reenrb
+module Reen
   # Change to an orignal file
   class Change
     attr_reader :original, :requested, :change, :status

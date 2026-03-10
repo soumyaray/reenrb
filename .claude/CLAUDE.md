@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Reenrb is a Ruby gem for mass renaming/deleting files through an interactive editor. It provides both a CLI (`reen`) and a programmatic API. Version 0.4.0, requires Ruby >= 3.0.
+Reen is a Ruby gem for mass renaming/deleting files through an interactive editor. It provides both a CLI (`reen`) and a programmatic API. Version 1.0.0, requires Ruby >= 3.0.
 
 ## Common Commands
 
@@ -24,13 +24,13 @@ bundle exec rake example:remove    # Clean up extracted fixtures
 
 ## Architecture
 
-**Flow:** `ReenCLI (bin/reen)` → `Reenrb::Reen` → `ChangesFile` (temp file + editor) → `Changes` → `Change` → `Action`
+**Flow:** `ReenCLI (bin/reen)` → `Reen::Reen` → `ChangesFile` (temp file + editor) → `Changes` → `Change` → `Action`
 
-- **`Reenrb::Reen`** (`lib/reenrb/reen.rb`) — Main orchestrator. Two-phase workflow: `request()` analyzes changes, `execute()` applies them. Constructor takes `editor:` (defaults to $VISUAL/$EDITOR) and `options:`.
-- **`Reenrb::Changes`** (`lib/reenrb/changes.rb`) — Collection of `Change` objects with filtering (`rename_requested`, `delete_requested`, `accepted`, `rejected`, `executed`, `failed`) and `execute_all`.
-- **`Reenrb::Change`** (`lib/reenrb/change.rb`) — Parses a single original→requested pair. Prefix `-` = delete, `--` = force delete. Maps change type to action handler via `ACTION_HANDLER` constant. Auto-rejects non-empty directory deletion (unless force).
-- **`Reenrb::ChangesFile`** (`lib/reenrb/changes_file.rb`) — Manages Tempfile for editor interaction, writes instructions header, parses edited result.
-- **Actions** (`lib/reenrb/actions/`) — Strategy pattern: `Rename`, `Delete`, `ForceDelete`, `DoNothing`. Each has `new(old, new)` and `call()` returning nil (success) or error string.
+- **`Reen::Reen`** (`lib/reen/reen.rb`) — Main orchestrator. Two-phase workflow: `request()` analyzes changes, `execute()` applies them. Constructor takes `editor:` (defaults to $VISUAL/$EDITOR) and `options:`.
+- **`Reen::Changes`** (`lib/reen/changes.rb`) — Collection of `Change` objects with filtering (`rename_requested`, `delete_requested`, `accepted`, `rejected`, `executed`, `failed`) and `execute_all`.
+- **`Reen::Change`** (`lib/reen/change.rb`) — Parses a single original→requested pair. Prefix `-` = delete, `--` = force delete. Maps change type to action handler via `ACTION_HANDLER` constant. Auto-rejects non-empty directory deletion (unless force).
+- **`Reen::ChangesFile`** (`lib/reen/changes_file.rb`) — Manages Tempfile for editor interaction, writes instructions header, parses edited result.
+- **Actions** (`lib/reen/actions/`) — Strategy pattern: `Rename`, `Delete`, `ForceDelete`, `DoNothing`. Each has `new(old, new)` and `call()` returning nil (success) or error string.
 
 ## Test Setup
 

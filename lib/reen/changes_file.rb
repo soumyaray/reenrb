@@ -2,7 +2,7 @@
 
 require "tempfile"
 
-module Reenrb
+module Reen
   # Manages a temporary file with requested changes
   class ChangesFile
     INSTRUCTIONS = <<~COMMENTS
@@ -18,7 +18,7 @@ module Reenrb
 
     def initialize(entry_list)
       @entry_list = entry_list
-      @list_file = Tempfile.new("reenrb-")
+      @list_file = Tempfile.new("reen-")
       @list_file.write(INSTRUCTIONS)
       @list_file.write(@entry_list.to_numbered.join("\n"))
       @list_file.close

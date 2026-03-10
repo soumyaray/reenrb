@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-require "reenrb"
+require "reen"
 require "optparse"
 
 # Reen command line application
@@ -32,7 +32,7 @@ class ReenCLI
 
   def setup_options(parser) # rubocop:disable Metrics/MethodLength
     parser.banner = "Usage: reen files [options]"
-    parser.version = Reenrb::VERSION
+    parser.version = Reen::VERSION
 
     parser.on("-e", "--editor [EDITOR]", "Use EDITOR (default: $EDITOR)") do |ed|
       @options.editor = ed || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
@@ -70,7 +70,7 @@ class ReenCLI
   end
 
   def call
-    @requests = Reenrb::Reen.new(editor: options.editor).request(files)
+    @requests = Reen::Reen.new(editor: options.editor).request(files)
     review_changes if user_review?
 
     changes = @requests
@@ -87,6 +87,6 @@ end
 
 begin
   ReenCLI.new(ARGV).call
-rescue Reenrb::Error => e
+rescue Reen::Error => e
   puts "#{e.message}\n"
 end

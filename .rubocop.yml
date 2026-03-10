@@ -5,7 +5,7 @@ AllCops:
 Metrics/BlockLength:
   Enabled: true
   Exclude:
-  - reenrb.gemspec
+  - reen.gemspec
 
 Style/HashSyntax:
   Enabled: true

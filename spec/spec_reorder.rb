@@ -6,7 +6,7 @@ describe "Number-based matching with reordering" do # rubocop:disable Metrics/Bl
   before do
     FixtureHelper.recreate_example_dir
     @old_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
-    @reen_mock_editor = Reenrb::Reen.new(editor: nil)
+    @reen_mock_editor = Reen::Reen.new(editor: nil)
   end
 
   after do
@@ -71,7 +71,7 @@ describe "Number-based matching with reordering" do # rubocop:disable Metrics/Bl
   end
 
   it "should raise error when lines are removed" do
-    assert_raises(Reenrb::Error) do
+    assert_raises(Reen::Error) do
       @reen_mock_editor.request(@old_glob) do |file|
         file.list.pop
       end

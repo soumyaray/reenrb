@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "lib/reenrb/version"
+require_relative "lib/reen/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "reenrb"
-  spec.version = Reenrb::VERSION
+  spec.name = "reen"
+  spec.version = Reen::VERSION
   spec.authors = ["Soumya Ray"]
   spec.email = ["soumya.ray@gmail.com"]
 
   spec.summary = "Renames or deletes a pattern of files using your favorite editor"
   spec.description = "Renames or deletes a pattern of files using your favorite editor"
-  spec.homepage = "https://github.com/soumyaray/reenrb"
+  spec.homepage = "https://github.com/soumyaray/reen"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0"
 

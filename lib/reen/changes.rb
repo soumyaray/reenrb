@@ -2,7 +2,7 @@
 
 require_relative "change"
 
-module Reenrb
+module Reen
   # Change to an orignal file
   class Changes
     attr_reader :list

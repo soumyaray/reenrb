@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-module Reenrb
+module Reen
   module Actions
-    # Deletes a file
-    class ForceDelete
+    # Renames files
+    class Rename
       def initialize(old_name, new_name)
         @old_name = old_name
         @new_name = new_name
       end
 
       def call
-        FileUtils.rm_rf(@old_name)
+        File.rename(@old_name, @new_name)
         nil
       rescue Errno::ENOENT
-        "Could not force delete"
+        "No such target file or directory"
       end
     end
   end

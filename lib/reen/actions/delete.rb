@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Reenrb
+module Reen
   module Actions
     # Deletes a file
     class Delete

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module Reenrb
+module Reen
   # Renames pattern of files with given editor
   # Examples:
-  #   Reenrb::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
-  #   Reenrb::Reen.new(editor: nil).call("spec/fixtures/example/*") { ... }
+  #   Reen::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
+  #   Reen::Reen.new(editor: nil).call("spec/fixtures/example/*") { ... }
   class Reen
     DEL_ERROR = "Do not remove any file/folder names (no changes made)"
 

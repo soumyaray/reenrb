@@ -6,7 +6,7 @@ describe "Change dash-operator parsing" do # rubocop:disable Metrics/BlockLength
   before do
     FixtureHelper.recreate_example_dir
     @file_path = Dir.glob(FixtureHelper::EXAMPLE_ALL).find { |f| File.file?(f) }
-    @entry = Reenrb::PathEntry.new(@file_path)
+    @entry = Reen::PathEntry.new(@file_path)
   end
 
   after do
@@ -14,26 +14,26 @@ describe "Change dash-operator parsing" do # rubocop:disable Metrics/BlockLength
   end
 
   it "should treat '- filename' (dash space) as delete" do
-    change = Reenrb::Change.new(@entry, "- #{@file_path}")
+    change = Reen::Change.new(@entry, "- #{@file_path}")
 
     _(change.change).must_equal :delete
   end
 
   it "should treat '-filename' (no space) as rename to -filename" do
-    change = Reenrb::Change.new(@entry, "-#{@file_path}")
+    change = Reen::Change.new(@entry, "-#{@file_path}")
 
     _(change.change).must_equal :rename
     _(change.requested).must_equal "-#{@file_path}"
   end
 
   it "should treat '-- filename' (double dash space) as force delete" do
-    change = Reenrb::Change.new(@entry, "-- #{@file_path}")
+    change = Reen::Change.new(@entry, "-- #{@file_path}")
 
     _(change.change).must_equal :force_delete
   end
 
   it "should treat '--filename' (no space) as rename to --filename" do
-    change = Reenrb::Change.new(@entry, "--#{@file_path}")
+    change = Reen::Change.new(@entry, "--#{@file_path}")
 
     _(change.change).must_equal :rename
     _(change.requested).must_equal "--#{@file_path}"

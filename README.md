@@ -1,6 +1,6 @@
-# Reenrb
+# Reen
 
-Reen-rb is a utility written in Ruby (requires Ruby installed on your machine) that mass renames/deletes files by allowing the user to modify a list. It includes a command line executable called `reen` that opens the user's default editor to permit interactive changes, or can be used programatically by modifying the list of file names using a code block.
+Reen is a utility written in Ruby (requires Ruby installed on your machine) that mass renames/deletes files by allowing the user to modify a list. It includes a command line executable called `reen` that opens the user's default editor to permit interactive changes, or can be used programatically by modifying the list of file names using a code block.
 
 [![Reen usage introduction](https://img.youtube.com/vi/yJfDRfJr3os/0.jpg)](https://www.youtube.com/watch?v=yJfDRfJr3os)
 
@@ -8,12 +8,12 @@ Reen-rb is a utility written in Ruby (requires Ruby installed on your machine) t
 
 To install the command line utility, use:
 
-    $ gem install reenrb
+    $ gem install reen
 
 Or add this line to your Ruby application's Gemfile for programmatic use:
 
 ```ruby
-gem 'reenrb'
+gem 'reen'
 ```
 
 ## Usage
@@ -97,13 +97,13 @@ Upon saving and exiting the editor, Reen will execute all the changes.
 
 ### Ruby application
 
-Use Reen programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block. Note that `file.list` contains numbered lines (e.g., `[1] LICENSE.txt`).
+Use Reen programmatically using the `reen` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block. Note that `file.list` contains numbered lines (e.g., `[1] LICENSE.txt`).
 
 ```ruby
-require 'reenrb'
+require 'reen'
 
 glob = Dir.glob("*")
-reen = Reenrb::Reen.new(editor: nil)
+reen = Reen::Reen.new(editor: nil)
 
 reen.execute(glob) do |file|
   # Rename LICENSE.txt -> LICENSE.md (gsub works on the path portion)
@@ -124,7 +124,7 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/soumyaray/reenrb.
+Bug reports and pull requests are welcome on GitHub at https://github.com/soumyaray/reen.
 
 ## License
 

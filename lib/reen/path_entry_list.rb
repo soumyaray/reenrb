@@ -2,7 +2,7 @@
 
 require_relative "path_entry"
 
-module Reenrb
+module Reen
   # Collection of PathEntry objects, constructed from an array of path strings
   class PathEntryList
     include Enumerable
