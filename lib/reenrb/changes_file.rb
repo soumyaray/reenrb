@@ -7,16 +7,20 @@ module Reenrb
   class ChangesFile
     INSTRUCTIONS = <<~COMMENTS
       # Edit the names of any files/folders to rename or move them
-      # - Put a preceeding dash to delete a file or empty folder
+      # - Put a dash followed by a space to delete a file or empty folder: - filename
+      # - Put double dash followed by a space to force delete: -- filename
+      # - Do not change or remove the [NN] number prefixes
+      # - You may reorder lines freely; numbers track the original files
 
     COMMENTS
 
     attr_accessor :list
 
-    def initialize(requested_list)
+    def initialize(entry_list)
+      @entry_list = entry_list
       @list_file = Tempfile.new("reenrb-")
       @list_file.write(INSTRUCTIONS)
-      @list_file.write(requested_list.join("\n"))
+      @list_file.write(@entry_list.to_numbered.join("\n"))
       @list_file.close
     end
 

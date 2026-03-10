@@ -16,11 +16,12 @@ module Reenrb
     end
 
     def request(original_list, &block)
-      changed_list = ChangesFile.new(original_list).allow_changes(@editor, &block)
+      @entry_list = PathEntryList.new(original_list)
+      changed_list = ChangesFile.new(@entry_list).allow_changes(@editor, &block)
 
-      raise(Error, DEL_ERROR) if changed_list.size != original_list.size
+      raise(Error, DEL_ERROR) if changed_list.size != @entry_list.count
 
-      @changes = compare_lists(original_list, changed_list)
+      @changes = compare_lists(@entry_list, changed_list)
                  .then { |change_array| Changes.new(change_array) }
     end
 
@@ -31,9 +32,14 @@ module Reenrb
 
     private
 
-    def compare_lists(original_list, changed_list)
-      original_list.zip(changed_list).map do |original, revised|
-        Change.new(original, revised)
+    def compare_lists(entry_list, changed_list)
+      changed_by_number = PathEntryList.from_numbered(changed_list)
+      entries = entry_list.to_a
+
+      entries.each_with_index.map do |entry, i|
+        number = i + 1
+        revised = changed_by_number[number]
+        Change.new(entry, revised)
       end
     end
   end

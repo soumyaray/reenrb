@@ -44,7 +44,8 @@ module Reenrb
     }.freeze
 
     def initialize(original, requested)
-      @original = original
+      @entry = original
+      @original = @entry.path
       extract_request(requested)
       decide_object
       decide_change
@@ -52,9 +53,7 @@ module Reenrb
     end
 
     def extract_request(str)
-      op_chars = "[-]"
-      obj_chars = "."
-      requested = str.match(/^(?<op>#{op_chars}*)(?<name>#{obj_chars}*)/)
+      requested = str.match(/^\s*(?<op>--|-) +(?<name>.*)/) || str.match(/^(?<op>)(?<name>.*)/)
 
       @operator = requested[:op]
       @requested = requested[:name].strip
@@ -104,9 +103,9 @@ module Reenrb
 
     # Predicates
 
-    def request_dir? = Dir.exist?(@original)
+    def request_dir? = @entry.dir?
 
-    def request_file? = File.file?(@original)
+    def request_file? = @entry.file?
 
     def request_nothing? = @change == CHANGE::NONE
 
@@ -114,7 +113,7 @@ module Reenrb
 
     def request_delete? = @change == CHANGE::DELETE
 
-    def request_empty_dir? = Dir.empty?(@original)
+    def request_empty_dir? = @entry.empty_dir?
 
     def accepted? = @status == STATUS::ACCEPTED
 
@@ -126,7 +125,7 @@ module Reenrb
 
     def failed? = @status == STATUS::FAILED
 
-    def request_full_dir? = request_dir? && !request_empty_dir?
+    def request_full_dir? = @entry.full_dir?
 
     def executed_or_rejected? = %i[executed rejected].include?(@status)
 

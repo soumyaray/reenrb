@@ -29,7 +29,7 @@ where `files` are a list of files or wildcard pattern (defaults to `*`; see exam
 Options include:
 
 - `--help` or `-h`' to see options help
-- `--editor EDITOR` or `-e EDITOR`' to set the editor (defaults to $VISUAL or $EDITOR otherwise) such as `emacs` or `vi`. For Visual Studio Code use `'code -w'` to block until editor finishes.
+- `--editor EDITOR` or `-e EDITOR` to set the editor (defaults to `$VISUAL` or `$EDITOR`). The editor must block until the file is closed — for VS Code use `'code -w'`, for Sublime use `'subl -w'`.
 - `--review` or `-r` request to review and confirm changes
 
 Examples:
@@ -42,53 +42,57 @@ Examples:
 
 ### Specifying changes through the editor
 
-Upon running Reen on file list, your editor will open with a list of file/folder names. For example:
+Upon running Reen on file list, your editor will open with a numbered list of file/folder names. Each line has a number prefix like `[01]` that tracks the original file. For example:
 
 ```
-LICENSE.txt
-README.md
-SETUP.txt
-bin
-bin/help
-bin/myexec
-tests
-tests/fixtures
-tests/fixtures/a.json
-tests/fixtures/b.json
-tests/fixtures/c.json
-tests/helper.code
-tests/tests.code
+[01] LICENSE.txt
+[02] README.md
+[03] SETUP.txt
+[04] bin
+[05] bin/help
+[06] bin/myexec
+[07] tests
+[08] tests/fixtures
+[09] tests/fixtures/a.json
+[10] tests/fixtures/b.json
+[11] tests/fixtures/c.json
+[12] tests/helper.code
+[13] tests/tests.code
 ```
 
 Specify changes to each file you wish changed modifying it in your editor:
 
-- Change the file/folder name to rename it (the rename could cause a move if you change its path; restrictions will be reported)
-- Prepend using `-` to delete a file or empty folder
-- Prepend using `--` to force delete a file or non-empty folder (recursively)
+- Change the file/folder name (after the number prefix) to rename it
+- Put `- ` (dash followed by a space) after the number prefix to delete a file or empty folder
+- Put `-- ` (double dash followed by a space) to force delete a file or non-empty folder (recursively)
+- You may freely reorder lines — the number prefixes track which original file each line refers to
+- Do not change or remove the `[NN]` number prefixes
 
-For example, if we wanted to change the above list of files/folders in the editor to (a) rename `LICENSE.txt` to `LICENSE.md`, (b) delete `SETUP.txt`, and (c) recursively delete the `bin/` folder, then we would change the filenames to look like:
+For example, if we wanted to (a) rename `LICENSE.txt` to `LICENSE.md`, (b) delete `SETUP.txt`, and (c) recursively delete the `bin/` folder:
 
 ```
-LICENSE.md
-README.md
--SETUP.txt
---bin
-bin/help
-bin/myexec
-tests
-tests/fixtures
-tests/fixtures/a.json
-tests/fixtures/b.json
-tests/fixtures/c.json
-tests/helper.code
-tests/tests.code
+[01] LICENSE.md
+[02] README.md
+[03] - SETUP.txt
+[04] -- bin
+[05] bin/help
+[06] bin/myexec
+[07] tests
+[08] tests/fixtures
+[09] tests/fixtures/a.json
+[10] tests/fixtures/b.json
+[11] tests/fixtures/c.json
+[12] tests/helper.code
+[13] tests/tests.code
 ```
+
+Note: filenames starting with dashes (e.g., `-myfile`) are safe — only a dash followed by a space triggers deletion.
 
 Upon saving and exiting the editor, Reen will execute all the changes.
 
 ### Ruby application
 
-Use Reen programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block.
+Use Reen programmatically using the `reenrb` gem. In the example below, we specify that we do not want to use an actual editor to modify the list, but rather alter the list file using a block. Note that `file.list` contains numbered lines (e.g., `[1] LICENSE.txt`).
 
 ```ruby
 require 'reenrb'
@@ -97,9 +101,13 @@ glob = Dir.glob("*")
 reen = Reenrb::Reen.new(editor: nil)
 
 reen.execute(glob) do |file|
-  # Rename LICENSE.txt -> LICENSE.md
+  # Rename LICENSE.txt -> LICENSE.md (gsub works on the path portion)
   index = file.list.index { |l| l.include? "LICENSE.txt" }
   file.list[index] = file.list[index].gsub("txt", "md")
+
+  # Delete a file — insert "- " after the number prefix
+  index = file.list.index { |l| l.include? "SETUP.txt" }
+  file.list[index] = file.list[index].sub("] ", "] - ")
 end
 ```
 

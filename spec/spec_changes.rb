@@ -40,9 +40,9 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
 
   it "HAPPY: should execute deletion correctly" do
     tasks = @reen_mock_editor.execute(@old_glob) do |file|
-      # Delete bin/myexec
+      # Delete bin/myexec — insert "- " after the [NN] prefix
       index = file.list.index { |l| l.include? "bin/myexec" }
-      file.list[index] = file.list[index].prepend("- ")
+      file.list[index] = file.list[index].sub("] ", "] - ")
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
@@ -58,9 +58,9 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
     num_expect_affected = @old_glob.select { |l| l.include?("/bin") }.count
 
     tasks = @reen_mock_editor.execute(@old_glob) do |file|
-      # Forcibly delete bin/ folder and its files and subfolders
+      # Forcibly delete bin/ folder — insert "-- " after the [NN] prefix
       index = file.list.index { |l| l.end_with? "/bin" }
-      file.list[index] = file.list[index].prepend("-- ")
+      file.list[index] = file.list[index].sub("] ", "] -- ")
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
@@ -76,9 +76,9 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
     num_expect_affected = @old_glob.select { |l| l.include?("/bin") }.count
 
     tasks = @reen_mock_editor.execute(@old_glob) do |file|
-      # Try to delete bin/ folder and its files and subfolders
+      # Try to delete bin/ folder — insert "- " after the [NN] prefix
       index = file.list.index { |l| l.end_with? "/bin" }
-      file.list[index] = file.list[index].prepend("- ")
+      file.list[index] = file.list[index].sub("] ", "] - ")
     end
 
     new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)

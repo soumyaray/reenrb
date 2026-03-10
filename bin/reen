@@ -7,7 +7,7 @@ require "optparse"
 
 # Reen command line application
 class ReenCLI
-  EDITOR_MSG = "Editor not set in $EDITOR or $VISUAL -- please set one of those environment variables"
+  EDITOR_MSG = "Editor not set in $VISUAL or $EDITOR -- please set one of those environment variables"
   Options = Struct.new(:editor, :review) do
     def initialize(editor: nil, review: false)
       editor ||= ENV["VISUAL"] || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar

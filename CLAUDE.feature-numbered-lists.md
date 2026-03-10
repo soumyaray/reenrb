@@ -20,11 +20,11 @@ Add numbered prefixes (e.g., `[01]`, `[002]`) to the file list shown in the edit
 ## Current State
 
 - [x] Plan created
-- [ ] Slice 0: PathEntry/PathEntryList refactor
-- [ ] Slice 1: Dash-operator ambiguity fix
-- [ ] Slice 2: Numbered prefixes
-- [ ] Slice 3: Number-based matching
-- [ ] Slice 4: Documentation
+- [x] Slice 0: PathEntry/PathEntryList refactor
+- [x] Slice 1: Dash-operator ambiguity fix
+- [x] Slice 2: Numbered prefixes
+- [x] Slice 3: Number-based matching
+- [x] Slice 4: Documentation
 - [ ] Slice 5: Verification
 
 ## Key Findings
@@ -63,76 +63,82 @@ Add numbered prefixes (e.g., `[01]`, `[002]`) to the file list shown in the edit
 - Reporting reorder information to the user
 - Any CLI flag to disable numbering
 - `Changes` refactor (stays as-is, wraps array of `Change`)
+- File/folder creation via unnumbered lines (touch/mkdir) — future feature, separate branch
 
 ## Tasks
 
-> **Strict TDD cycle**: For each slice — (1) run full suite to confirm green baseline, (2) write failing tests (RED), (3) run tests to confirm they fail, (4) implement (GREEN), (5) run full suite to confirm all pass.
+> **Strict TDD cycle**: For each slice — (1) run full suite to confirm green baseline, (2) write failing tests (RED), (3) run tests to confirm they fail, (4) implement (GREEN), (5) run full suite to confirm all pass. **Check off each step immediately after completing it.**
 
 ### Slice 0: Introduce PathEntry and PathEntryList domain objects (refactor)
 
-- [ ] 0.0 Run full suite — confirm green baseline
-- [ ] 0.1 RED — Write failing tests in `spec/spec_path_entry.rb`:
-  - [ ] 0.1a `PathEntry` wraps a path and delegates `file?`, `dir?`, `empty_dir?`, `full_dir?`
-  - [ ] 0.1b `PathEntryList` constructs from array of strings, iterates as `PathEntry` objects
-  - [ ] 0.1c `PathEntryList#paths` returns array of path strings
-- [ ] 0.2 Run new tests — confirm RED (failures)
-- [ ] 0.3 GREEN — Implement `PathEntry` (`lib/reenrb/path_entry.rb`)
-- [ ] 0.4 GREEN — Implement `PathEntryList` (`lib/reenrb/path_entry_list.rb`)
-- [ ] 0.5 Run new tests — confirm GREEN (pass)
-- [ ] 0.6 Refactor `Change` to hold `PathEntry`, delegate filesystem queries
-- [ ] 0.7 Refactor `Reen` and `ChangesFile` to accept/use `PathEntryList`
-- [ ] 0.8 Run full suite — confirm all tests pass (update as needed)
+- [x] 0.0 Run full suite — confirm green baseline (11 tests, 0 failures)
+- [x] 0.1 RED — Write failing tests in `spec/spec_path_entry.rb`:
+  - [x] 0.1a `PathEntry` wraps a path and delegates `file?`, `dir?`, `empty_dir?`, `full_dir?`
+  - [x] 0.1b `PathEntryList` constructs from array of strings, iterates as `PathEntry` objects
+  - [x] 0.1c `PathEntryList#paths` returns array of path strings
+- [x] 0.2 Run new tests — confirm RED (6 errors, uninitialized constant)
+- [x] 0.3 GREEN — Implement `PathEntry` (`lib/reenrb/path_entry.rb`)
+- [x] 0.4 GREEN — Implement `PathEntryList` (`lib/reenrb/path_entry_list.rb`)
+- [x] 0.5 Run new tests — confirm GREEN (6 runs, 27 assertions, 0 failures)
+- [x] 0.6 Refactor `Change` to hold `PathEntry`, delegate filesystem queries
+- [x] 0.7 Refactor `Reen` and `ChangesFile` to accept/use `PathEntryList`
+- [x] 0.8 Run full suite — confirm all tests pass (17 runs, 58 assertions, 0 failures)
 
 ### Slice 1: Fix dash-operator ambiguity in Change
 
-- [ ] 1.0 Run full suite — confirm green baseline
-- [ ] 1.1 RED — Write failing tests in `spec/spec_change.rb`:
-  - [ ] 1.1a `- filename` (with space) triggers delete
-  - [ ] 1.1b `-filename` (no space) triggers rename to `-filename`
-  - [ ] 1.1c `-- filename` (with space) triggers force delete
-  - [ ] 1.1d `--filename` (no space) triggers rename to `--filename`
-- [ ] 1.2 Run new tests — confirm RED (1.1b and 1.1d fail)
-- [ ] 1.3 GREEN — Update `Change#extract_request` regex to require space after `-`/`--`
-- [ ] 1.4 Run full suite — confirm GREEN (update any tests that relied on no-space dash)
+- [x] 1.0 Run full suite — confirm green baseline (17 runs, 0 failures)
+- [x] 1.1 RED — Write failing tests in `spec/spec_change.rb`:
+  - [x] 1.1a `- filename` (with space) triggers delete
+  - [x] 1.1b `-filename` (no space) triggers rename to `-filename`
+  - [x] 1.1c `-- filename` (with space) triggers force delete
+  - [x] 1.1d `--filename` (no space) triggers rename to `--filename`
+- [x] 1.2 Run new tests — confirm RED (1.1b and 1.1d fail as expected)
+- [x] 1.3 GREEN — Updated `Change#extract_request` regex: `^(--|-)·(?<name>.*)` with fallback `^()(?<name>.*)`
+- [x] 1.4 Run full suite — confirm GREEN (21 runs, 64 assertions, 0 failures)
 
 ### Slice 2: Numbered prefixes in PathEntryList and ChangesFile
 
-- [ ] 2.0 Run full suite — confirm green baseline
-- [ ] 2.1 RED — Write failing tests:
-  - [ ] 2.1a `PathEntryList#to_numbered` serializes as `[NN] path` lines (auto-sized width)
-  - [ ] 2.1b `PathEntryList.from_numbered` parses `[NN] path` lines back to number-keyed entries
-  - [ ] 2.1c `ChangesFile` instructions header mentions not changing numbers and allowing reorder
-- [ ] 2.2 Run new tests — confirm RED (failures)
-- [ ] 2.3 GREEN — Implement `PathEntryList#to_numbered` and `PathEntryList.from_numbered`
-- [ ] 2.4 GREEN — Update `ChangesFile` to use numbered serialization
-- [ ] 2.5 GREEN — Update `INSTRUCTIONS` constant with reorder/number guidance
-- [ ] 2.6 Run full suite — confirm all tests pass
+- [x] 2.0 Run full suite — confirm green baseline (21 runs, 0 failures)
+- [x] 2.1 RED — Write failing tests:
+  - [x] 2.1a `PathEntryList#to_numbered` serializes as `[NN] path` lines (auto-sized width)
+  - [x] 2.1b `PathEntryList.from_numbered` parses `[NN] path` lines back to number-keyed entries
+  - [x] 2.1c (deferred to Slice 4 — documentation)
+- [x] 2.2 Run new tests — confirm RED (3 errors, undefined method `to_numbered`)
+- [x] 2.3 GREEN — Implement `PathEntryList#to_numbered` and `PathEntryList.from_numbered`
+- [x] 2.4 GREEN — Update `ChangesFile` to use numbered serialization
+- [x] 2.5 GREEN — Update `INSTRUCTIONS` constant with reorder/number/dash-space guidance
+- [x] 2.6 Run full suite — deferred to Slice 3 (existing tests broke as expected, fixed there)
 
 ### Slice 3: Number-based matching in Reen
 
-- [ ] 3.0 Run full suite — confirm green baseline
-- [ ] 3.1 RED — Write failing tests:
-  - [ ] 3.1a `Reen#request` correctly matches reordered entries to originals by number
-  - [ ] 3.1b `Reen#request` still raises error when lines are removed
-- [ ] 3.2 Run new tests — confirm RED (3.1a fails)
-- [ ] 3.3 GREEN — Change `Reen#compare_lists` to match by number key instead of positional zip
-- [ ] 3.4 GREEN — Update existing tests that manipulate `file.list` to account for numbered prefixes
-- [ ] 3.5 Run full suite — confirm all tests pass
+- [x] 3.0 (combined with Slice 2 — baseline was 21 runs before numbered output broke existing tests)
+- [x] 3.1 RED — Write failing tests in `spec/spec_reorder.rb`:
+  - [x] 3.1a `Reen#request` correctly matches reordered entries to originals by number (reverse, rename+move)
+  - [x] 3.1b `Reen#request` still raises error when lines are removed
+- [x] 3.2 Run new tests — confirm RED (3.1a failed, 3.1b passed)
+- [x] 3.3 GREEN — Changed `Reen#compare_lists` to use `PathEntryList.from_numbered` for number-keyed matching
+- [x] 3.4 GREEN — Updated existing tests: delete/force-delete use `.sub("] ", "] - ")` pattern
+- [x] 3.5 Run full suite — confirm all pass (27 runs, 110 assertions, 0 failures)
 
 ### Slice 4: Documentation
 
-- [ ] 4.1 Update README.md: document numbered prefixes, dash-space syntax, reordering support
-- [ ] 4.2 Update CLI help text in `bin/reen` if needed
-- [ ] 4.3 Verify `ChangesFile::INSTRUCTIONS` final wording (from Slice 2.5)
+- [x] 4.1 Update README.md: documented numbered prefixes, dash-space syntax, reordering, programmatic examples
+- [x] 4.2 CLI help in `bin/reen` — no changes needed (uses banner/options only, editing syntax is in INSTRUCTIONS)
+- [x] 4.3 `ChangesFile::INSTRUCTIONS` — updated in Slice 2.5, verified
 
 ### Slice 5: Verification
 
-- [ ] 5.1 Run full suite (`bundle exec rake`) — all green
-- [ ] 5.2 Manual verification with real editor
+- [x] 5.1 Run full suite (`bundle exec rake`) — 29 tests, 115 assertions, 0 failures. RuboCop: only pre-existing offenses, no new ones.
+- [ ] 5.2 Manual verification with real editor (user to perform)
 
 ## Completed
 
-(none yet)
+- Slice 0: PathEntry/PathEntryList refactor — `PathEntry` wraps paths with filesystem queries, `PathEntryList` is an Enumerable collection. `Change` delegates to `PathEntry`. `Reen` and `ChangesFile` accept `PathEntryList`. All 17 tests pass.
+- Slice 1: Dash-operator ambiguity fix — `Change#extract_request` now requires space after `-`/`--` for delete operators. `-file` is rename to `-file`, `- file` is delete. All 21 tests pass.
+- Slice 2: Numbered prefixes — `PathEntryList#to_numbered` and `.from_numbered` implemented. `ChangesFile` writes `[NN] path` lines and updated `INSTRUCTIONS`.
+- Slice 3: Number-based matching — `Reen#compare_lists` uses `from_numbered` for number-keyed matching instead of positional zip. Reordering works. All 27 tests pass (110 assertions).
+- Slice 4: Documentation — README updated with numbered prefixes, dash-space syntax, reordering docs, programmatic examples. CLI help unchanged (banner only). INSTRUCTIONS verified.
+- Slice 5: Verification — 29 tests, 115 assertions, 0 failures. No new RuboCop offenses. Manual editor test pending.
 
 ---
 

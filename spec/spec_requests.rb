@@ -35,9 +35,9 @@ describe "Changes requested" do # rubocop:disable Metrics/BlockLength
 
   it "should consider deletion requests correctly" do
     requests = @reen_mock_editor.request(@old_glob) do |file|
-      # Delete bin/myexec
+      # Delete bin/myexec — insert "- " after the [NN] prefix
       index = file.list.index { |l| l.include? "bin/myexec" }
-      file.list[index] = file.list[index].prepend("- ")
+      file.list[index] = file.list[index].sub("] ", "] - ")
     end
 
     _(requests.changes_requested?).must_equal true
