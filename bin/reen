@@ -30,7 +30,7 @@ class ReenCLI
     exit_with_msg(optparse)
   end
 
-  def setup_options(parser)
+  def setup_options(parser) # rubocop:disable Metrics/MethodLength
     parser.banner = "Usage: reen files [options]"
     parser.version = Reenrb::VERSION
 
