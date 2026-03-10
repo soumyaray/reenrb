@@ -88,7 +88,7 @@ module Reenrb
     end
 
     def execute
-      return(self) if not_accepted?
+      return self if not_accepted?
 
       @status = STATUS::EXECUTED
       error = ACTION_HANDLER[@change].new(@original, @requested).call

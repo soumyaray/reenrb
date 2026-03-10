@@ -30,15 +30,6 @@ Gem::Specification.new do |spec|
   spec.executables << "reen"
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "irb"
-  spec.add_development_dependency "minitest", "~> 5.0"
-  spec.add_development_dependency "minitest-rg", "~> 5.0"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rerun", "~> 0.13"
-  spec.add_development_dependency "rubocop", "~> 1.21"
-  spec.add_development_dependency "rubyzip", "~> 2.3"
-  spec.add_development_dependency "simplecov"
-
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
 end

@@ -4,3 +4,12 @@ source "https://rubygems.org"
 
 # Specify your gem's dependencies in reenrb.gemspec
 gemspec
+
+gem "irb"
+gem "minitest", "~> 5.0"
+gem "minitest-rg", "~> 5.0"
+gem "rake", "~> 13.0"
+gem "rerun", "~> 0.13"
+gem "rubocop", "~> 1.21"
+gem "rubyzip", "~> 2.3"
+gem "simplecov"

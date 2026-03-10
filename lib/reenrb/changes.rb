@@ -59,7 +59,7 @@ module Reenrb
     def summarize
       return "Nothing changed" if @list.empty?
 
-      @list.map(&:to_s).join("\n")
+      @list.join("\n")
     end
 
     # Predicates
