@@ -52,7 +52,7 @@ module Reen
 
     def review_changes
       puts
-      puts @requests.change_requested.summarize
+      puts @changes.summarize
       print "\nContinue? (y/n) "
       confirmation = %w[y yes].include?($stdin.gets.chomp.downcase)
       exit_with_msg("Nothing changed") unless confirmation
@@ -70,15 +70,15 @@ module Reen
     def call
       @service = Renamer.new(editor: options.editor)
       @requests = @service.request(files)
+      @changes = @requests.change_requested
+
       review_changes if user_wants_review?
-
       @service.execute_changes
-      changes = @requests.change_requested
 
-      if user_wants_review? && changes.all_executed?
+      if user_wants_review? && @changes.all_executed?
         puts "Changes made"
       else
-        puts changes.summarize
+        puts @changes.summarize
       end
     end
   end
