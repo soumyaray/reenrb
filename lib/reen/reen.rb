@@ -21,8 +21,7 @@ module Reen
 
       raise(Error, DEL_ERROR) if changed_list.size != @entry_list.count
 
-      @changes = compare_lists(@entry_list, changed_list)
-                 .then { |change_array| Changes.new(change_array) }
+      @changes = detect_changes(@entry_list, changed_list)
     end
 
     def execute(original_list, &block)
@@ -32,15 +31,15 @@ module Reen
 
     private
 
-    def compare_lists(entry_list, changed_list)
+    def detect_changes(entry_list, changed_list)
       changed_by_number = PathEntryList.from_numbered(changed_list)
       entries = entry_list.to_a
 
-      entries.each_with_index.map do |entry, i|
-        number = i + 1
-        revised = changed_by_number[number]
-        Change.new(entry, revised)
+      changes = changed_by_number.map do |number, revised|
+        Change.new(entries[number - 1], revised)
       end
+
+      Changes.new(changes)
     end
   end
 end

@@ -105,4 +105,47 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
     _(new_glob.select { |l| l.include?(".json") }.size).must_equal 0
     _(new_glob.select { |l| l.include?(".yaml") }.size).must_equal 3
   end
+
+  it "HAPPY: should rename child file before parent folder when reordered" do
+    tasks = @reen_mock_editor.execute(@old_glob) do |file|
+      # Rename a file inside tests/ and rename the tests/ folder itself
+      file.list.each_with_index do |line, i|
+        if line.include?("tests/helper.code")
+          file.list[i] = line.gsub("tests/helper.code", "tests/helper.rb")
+        elsif line.end_with?("/tests")
+          file.list[i] = line.gsub("/tests", "/specs")
+        end
+      end
+
+      # Move the child file line before the parent folder line
+      folder_idx = file.list.index { |l| l.end_with?("/specs") }
+      child_idx = file.list.index { |l| l.include?("helper.rb") }
+      child_line = file.list.delete_at(child_idx)
+      file.list.insert(folder_idx, child_line)
+    end
+
+    new_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
+
+    _(tasks.failed.count).must_equal 0
+    _(new_glob.any? { |l| l.include?("specs/helper.rb") }).must_equal true
+    _(new_glob.any? { |l| l.end_with?("/specs") }).must_equal true
+  end
+
+  it "SAD: should fail child rename when parent folder renamed first in default order" do
+    tasks = @reen_mock_editor.execute(@old_glob) do |file|
+      # Rename a file inside tests/ and rename the tests/ folder itself
+      # Keep default order (folder before file) — no reordering
+      file.list.each_with_index do |line, i|
+        if line.include?("tests/helper.code")
+          file.list[i] = line.gsub("tests/helper.code", "tests/helper.rb")
+        elsif line.end_with?("/tests")
+          file.list[i] = line.gsub("/tests", "/specs")
+        end
+      end
+    end
+
+    # Without reordering, folder renames first, breaking the child path
+    _(tasks.failed.count).must_equal 1
+    _(tasks.failed.list.first.original).must_include "tests/helper.code"
+  end
 end
