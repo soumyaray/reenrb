@@ -65,19 +65,19 @@ class ReenCLI
     exit_with_msg(EDITOR_MSG) unless options.editor
   end
 
-  def user_review?
+  def user_wants_review?
     @options.review && @requests.changes_requested?
   end
 
   def call
     @requests = Reen::Reen.new(editor: options.editor).request(files)
-    review_changes if user_review?
+    review_changes if user_wants_review?
 
     changes = @requests
               .execute_all
               .change_requested
 
-    if user_review? && changes.all_executed?
+    if user_wants_review? && changes.all_executed?
       puts "Changes made"
     else
       puts changes.summarize

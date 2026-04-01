@@ -27,6 +27,9 @@ module Reen
       end
     end
 
+    # Parses "[NN] path" lines into { number => path } hash.
+    # Preserves line order (Ruby hash insertion order), so callers get editor order.
+    # Silently skips lines that don't match the [NN] pattern.
     def self.from_numbered(lines)
       lines.each_with_object({}) do |line, hash|
         match = line.match(/^\[(\d+)\] (.*)/)

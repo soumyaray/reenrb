@@ -24,6 +24,8 @@ module Reen
       @list_file.close
     end
 
+    # Returns only valid "[NN] path" entry lines (comments and blanks stripped).
+    # Line order reflects the user's editor arrangement.
     def allow_changes(editor, &block)
       await_editor(editor) if editor
       @list = File.read(path).split("\n").map(&:strip)
