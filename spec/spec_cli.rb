@@ -86,7 +86,7 @@ describe "Reen::ReenCLI" do # rubocop:disable Metrics/BlockLength
     it "should report nothing changed when editor makes no edits" do
       target = "spec/fixtures/example/README.md"
 
-      cli = Reen::ReenCLI.new(["--editor", "cat", target])
+      cli = Reen::ReenCLI.new(["--editor", "true", target])
       output = capture_stdout { cli.call }
 
       _(output).must_include "Nothing changed"
