@@ -3,90 +3,9 @@
 
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require "reen"
-require "optparse"
-
-# Reen command line application
-class ReenCLI
-  EDITOR_MSG = "Editor not set in $VISUAL or $EDITOR -- please set one of those environment variables"
-  Options = Struct.new(:editor, :review) do
-    def initialize(editor: nil, review: false)
-      editor ||= ENV["VISUAL"] || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
-      super(editor, review)
-    end
-  end
-
-  attr_reader :options, :files
-
-  def initialize(args)
-    @options = Options.new
-    optparse = OptionParser.new { |parser| setup_options(parser) }
-    optparse.parse!(args, into: @options)
-
-    exit_with_msg(EDITOR_MSG) unless options.editor
-
-    @files = args.empty? ? Dir.glob("*") : args
-  rescue OptionParser::InvalidOption => e
-    puts "#{e.message}\n\n"
-    exit_with_msg(optparse)
-  end
-
-  def setup_options(parser) # rubocop:disable Metrics/MethodLength
-    parser.banner = "Usage: reen files [options]"
-    parser.version = Reen::VERSION
-
-    parser.on("-e", "--editor [EDITOR]", "Use EDITOR (default: $EDITOR)") do |ed|
-      @options.editor = ed || ENV["EDITOR"] # rubocop:disable Style/FetchEnvVar
-    end
-    parser.on("-v", "--visual [EDITOR]", "Use EDITOR (default: $VISUAL)") do |ed|
-      @options.editor = ed || ENV["VISUAL"] # rubocop:disable Style/FetchEnvVar
-    end
-    parser.on("-r", "--review", "Require review and confirmation of changes")
-
-    parser.on("-h", "--help", "Show help for options") do
-      exit_with_msg(parser)
-    end
-  end
-
-  def exit_with_msg(message)
-    puts message
-    exit(false)
-  end
-
-  def review_changes
-    puts
-    puts @requests.change_requested.summarize
-    print "\nContinue? (y/n) "
-    confirmation = %w[y yes].include?($stdin.gets.chomp.downcase)
-    exit_with_msg("Nothing changed") unless confirmation
-  end
-
-  def check_inputs
-    @files = files.empty? ? Dir.glob("*") : files
-    exit_with_msg(EDITOR_MSG) unless options.editor
-  end
-
-  def user_wants_review?
-    @options.review && @requests.changes_requested?
-  end
-
-  def call
-    @service = Reen::Reen.new(editor: options.editor)
-    @requests = @service.request(files)
-    review_changes if user_wants_review?
-
-    @service.execute_changes
-    changes = @requests.change_requested
-
-    if user_wants_review? && changes.all_executed?
-      puts "Changes made"
-    else
-      puts changes.summarize
-    end
-  end
-end
 
 begin
-  ReenCLI.new(ARGV).call
+  Reen::ReenCLI.new(ARGV).call
 rescue Reen::Error => e
   puts "#{e.message}\n"
 end

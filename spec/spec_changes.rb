@@ -6,7 +6,7 @@ describe "Executing changes" do # rubocop:disable Metrics/BlockLength
   before do
     FixtureHelper.recreate_example_dir
     @old_glob = Dir.glob(FixtureHelper::EXAMPLE_ALL)
-    @reen_mock_editor = Reen::Reen.new(editor: nil)
+    @reen_mock_editor = Reen::Renamer.new(editor: nil)
   end
 
   after do

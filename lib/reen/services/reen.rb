@@ -8,9 +8,9 @@ require_relative "../infrastructure/actions/nothing"
 module Reen
   # Renames pattern of files with given editor
   # Examples:
-  #   Reen::Reen.new(editor: "code -w").call("spec/fixtures/example/*")
-  #   Reen::Reen.new(editor: nil).call("spec/fixtures/example/*") { ... }
-  class Reen
+  #   Reen::Renamer.new(editor: "code -w").call("spec/fixtures/example/*")
+  #   Reen::Renamer.new(editor: nil).call("spec/fixtures/example/*") { ... }
+  class Renamer
     DEL_ERROR = "Do not remove any file/folder names (no changes made)"
 
     ACTION_HANDLER = {

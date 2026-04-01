@@ -103,7 +103,7 @@ Use Reen programmatically using the `reen` gem. In the example below, we specify
 require 'reen'
 
 glob = Dir.glob("*")
-reen = Reen::Reen.new(editor: nil)
+reen = Reen::Renamer.new(editor: nil)
 
 reen.execute(glob) do |file|
   # Rename LICENSE.txt -> LICENSE.md (gsub works on the path portion)
