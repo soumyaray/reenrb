@@ -70,12 +70,12 @@ class ReenCLI
   end
 
   def call
-    @requests = Reen::Reen.new(editor: options.editor).request(files)
+    @service = Reen::Reen.new(editor: options.editor)
+    @requests = @service.request(files)
     review_changes if user_wants_review?
 
-    changes = @requests
-              .execute_all
-              .change_requested
+    @service.execute_changes
+    changes = @requests.change_requested
 
     if user_wants_review? && changes.all_executed?
       puts "Changes made"

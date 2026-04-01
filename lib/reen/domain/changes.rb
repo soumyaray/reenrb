@@ -11,11 +11,6 @@ module Reen
       @list = changes_list
     end
 
-    def execute_all
-      @list.map(&:execute)
-      self
-    end
-
     # Queries
 
     def rename_requested

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "actions/delete"
-require_relative "actions/force_delete"
-require_relative "actions/rename"
-require_relative "actions/nothing"
-
 module Reen
   # Change to an orignal file
   class Change
@@ -28,13 +23,6 @@ module Reen
       FILE = :file
       FOLDER = :folder
     end
-
-    ACTION_HANDLER = {
-      CHANGE::NONE => Actions::DoNothing,
-      CHANGE::DELETE => Actions::Delete,
-      CHANGE::FORCE_DELETE => Actions::ForceDelete,
-      CHANGE::RENAME => Actions::Rename
-    }.freeze
 
     CHANGES_DESC = {
       CHANGE::NONE => "Nothing",
@@ -87,18 +75,13 @@ module Reen
       end
     end
 
-    def execute
-      return self if not_accepted?
-
+    def mark_executed
       @status = STATUS::EXECUTED
-      error = ACTION_HANDLER[@change].new(@original, @requested).call
+    end
 
-      if error
-        @status = STATUS::FAILED
-        @reason = error
-      end
-
-      self
+    def mark_failed(reason)
+      @status = STATUS::FAILED
+      @reason = reason
     end
 
     # Predicates
